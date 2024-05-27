@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "fega.export-all-typescript",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}
