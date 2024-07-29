@@ -61,6 +61,7 @@ export const ModelsPage: FC = () => {
     if (selectedModelId !== modelId) {
       // If the modelId is not the same as the selectedModelId, reset the variantId
       resetStore(NavigationDestination.Models)
+      // Eliminate the forward navigation history
     }
   }
 

@@ -14,9 +14,3 @@ export const STEP_BUTTONS_STATE_DEFAULT = {
 }
 
 export const stepButtonsState = proxy<StepButtonsStateType>(STEP_BUTTONS_STATE_DEFAULT)
-
-if (import.meta.env.DEV) {
-  import('valtio/utils').then(({ devtools }) => {
-    devtools(stepButtonsState, { name: 'stepButtonsState', enabled: true })
-  })
-}

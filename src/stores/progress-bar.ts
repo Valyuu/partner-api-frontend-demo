@@ -39,9 +39,3 @@ export const progressBarState = proxy<ProgressBarStateType>({
     ) /* confirmation */
   },
 })
-
-if (import.meta.env.DEV) {
-  import('valtio/utils').then(({ devtools }) => {
-    devtools(progressBarState, { name: 'progressBarState', enabled: true })
-  })
-}

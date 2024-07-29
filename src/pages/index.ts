@@ -1,7 +1,7 @@
 export * from './brands'
 export * from './categories'
 export * from './conditions'
-// export * from './confirmation'
+export * from './confirmation'
 export * from './guidances'
 export * from './model-attributes'
 export * from './models'

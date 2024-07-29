@@ -42,8 +42,18 @@ export const ConditionQuestion = ({ data, currentValue, onSelect }: ConditionQue
             )}
           >
             <RadioGroupItem value={option.id} id={option.id} className="ml-4" />
-            <Label htmlFor={option.id} className="grow cursor-pointer items-center space-x-3 py-5 font-medium">
-              {option.name}
+            <Label
+              htmlFor={option.id}
+              className="flex w-full grow cursor-pointer flex-col items-start space-x-3 space-y-3 py-5"
+            >
+              {option.description ? (
+                <>
+                  <strong className="ml-3">{option.name}</strong>
+                  <p>{option.description}</p>
+                </>
+              ) : (
+                option.name
+              )}
             </Label>
           </div>
         ))}

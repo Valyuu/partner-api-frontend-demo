@@ -77,7 +77,7 @@ const config = {
 
 if (process.env.NODE_ENV === 'development') {
   config.plugins.push(debugScreen)
-  config.theme.debugScreens = { selector: 'body', position: ['bottom', 'right'] }
+  config.theme.debugScreens = { selector: 'body', position: ['bottom', 'left'] }
 }
 
 export default config

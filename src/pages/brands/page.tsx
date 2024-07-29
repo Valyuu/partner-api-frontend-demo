@@ -61,7 +61,7 @@ export const BrandsPage: FC = () => {
 
   const handleBrandSelect = (selectedBrandId: string) => {
     productSelectionState.brandId = selectedBrandId
-    // If the brandId is not the same as the selectedBrandId, reset the modelId and variantId
+    // If the brandId is not the same as the selectedBrandId, reset the modelId
     if (brandId !== selectedBrandId) {
       resetStore(NavigationDestination.Brands)
     }

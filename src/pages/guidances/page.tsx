@@ -26,9 +26,9 @@ export const ModelGuidancesPage: FC = () => {
   const searchParams = new URLSearchParams(location.search)
   const sectionIndex = parseInt(searchParams.get('index') ?? '') || 0
 
-  const { attribute: modelAttributeStepsCount } = useSnapshot(questionSectionState.questionCount)
+  const { attribute: modelAttributeStepCount } = useSnapshot(questionSectionState.questionCount)
 
-  const currentStep = (NAVIGATION_BRANDS_PAGE_ENABLED ? 4 : 3) + modelAttributeStepsCount + sectionIndex
+  const currentStep = (NAVIGATION_BRANDS_PAGE_ENABLED ? 4 : 3) + modelAttributeStepCount + sectionIndex
 
   const navigate = useNavigate()
 
@@ -92,8 +92,13 @@ export const ModelGuidancesPage: FC = () => {
                 pathname: NavigationDestination.Guidances as const,
                 search: `?index=${sectionIndex - 1}`,
               })
+            } else if (modelAttributeStepCount) {
+              navigate({
+                pathname: NavigationDestination.ModelAttributes as const,
+                search: `?index=${modelAttributeStepCount - 1}`,
+              })
             } else {
-              navigate(NavigationDestination.ModelAttributes)
+              navigate(NavigationDestination.Models)
             }
           }
         },
@@ -120,7 +125,7 @@ export const ModelGuidancesPage: FC = () => {
   }
 
   const handleGuidanceSelect = (value: GuidanceQuestionOptions) => {
-    // If it's the last question in the section, get variantId
+    // If it's the last question in the section, get isFunctional value
     if (sectionIndex === guidanceCount - 1) {
       const isFunctional = [...guidanceResults.filter((_, index) => index !== sectionIndex), value].every(
         (result) => result === GuidanceQuestionOptions.Yes
@@ -130,6 +135,7 @@ export const ModelGuidancesPage: FC = () => {
       // If the answer is no, reset isFunctional, condition and problem results
       if (value === GuidanceQuestionOptions.No) {
         resetStore(NavigationDestination.Guidances)
+        // Eliminate the forward navigation history
       }
     }
     questionResultsState[QuestionSection.Guidance][sectionIndex] = value

@@ -14,9 +14,3 @@ export const productSelectionState = createPersistedStore<ProductSelectionStateT
   PRODUCT_SELECTION_STATE_KEY,
   PRODUCT_SELECTION_STATE_DEFAULT
 )
-
-if (import.meta.env.DEV) {
-  import('valtio/utils').then(({ devtools }) => {
-    devtools(productSelectionState, { name: 'productSelectionState', enabled: true })
-  })
-}

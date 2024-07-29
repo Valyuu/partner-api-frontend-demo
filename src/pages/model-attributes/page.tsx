@@ -1,6 +1,6 @@
 import { set } from 'lodash-es'
 import { FC, useEffect, useLayoutEffect } from 'react'
-import { NavigationType, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
 import { ModelAttributeQuestion } from '~/components'
@@ -31,8 +31,6 @@ export const ModelAttributesPage: FC = () => {
 
   const navigate = useNavigate()
 
-  const navType = useNavigationType()
-
   const { modelId } = useSnapshot(productSelectionState)
 
   const attributeResults = useSnapshot(questionResultsState[QuestionSection.Attribute])
@@ -47,22 +45,25 @@ export const ModelAttributesPage: FC = () => {
 
   const attributeCount = data?.data?.attributeQuestions.length ?? questionSectionState.questionCount.attribute
 
-  const goToPreviousPage = () => {
+  const goToPreviousPage = (replace = false) => {
     if (window.history.length > 1) {
       navigate(NavigationDestination.HistoryBack)
     } else {
       if (sectionIndex > 0) {
-        navigate({
-          pathname: NavigationDestination.ModelAttributes as const,
-          search: `?index=${sectionIndex - 1}`,
-        })
+        navigate(
+          {
+            pathname: NavigationDestination.ModelAttributes as const,
+            search: `?index=${sectionIndex - 1}`,
+          },
+          { replace }
+        )
       } else {
         navigate(NavigationDestination.Models)
       }
     }
   }
 
-  const goToNextPage = () => {
+  const goToNextPage = (replace = false) => {
     if (sectionIndex < attributeCount - 1) {
       navigate({
         pathname: NavigationDestination.ModelAttributes as const,
@@ -71,7 +72,7 @@ export const ModelAttributesPage: FC = () => {
     } else {
       questionSectionState.current = QuestionSection.Guidance
       questionSectionState.index = 0
-      navigate({ pathname: NavigationDestination.Guidances as const, search: `?index=0` })
+      navigate({ pathname: NavigationDestination.Guidances as const, search: `?index=0` }, { replace })
     }
   }
 
@@ -139,6 +140,7 @@ export const ModelAttributesPage: FC = () => {
       // If the attributeId and optionId are not the same as previously selected ones, reset the variantId and questionResults
       if (attributeId === selectedAttribute.attributeId && optionId !== selectedAttribute.optionId) {
         resetStore(NavigationDestination.ModelAttributes)
+        // Eliminate the forward navigation history
       }
     }
     questionResultsState[QuestionSection.Attribute][sectionIndex] = selectedAttribute
@@ -162,11 +164,8 @@ export const ModelAttributesPage: FC = () => {
   ) {
     const variantId = attributeCombinations[0].variantId
     productSelectionState.variantId = variantId
-    if (navType === NavigationType.Pop) {
-      setTimeout(goToPreviousPage)
-    } else {
-      setTimeout(goToNextPage)
-    }
+    // By replacing the current page with the next one, we prevent the user from going back to the current page
+    setTimeout(() => goToNextPage(true))
     return null
   }
   const attributeQuestions = data?.data?.attributeQuestions

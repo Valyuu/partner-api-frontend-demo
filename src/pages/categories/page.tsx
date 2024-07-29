@@ -36,6 +36,7 @@ export const CategoriesPage: FC = () => {
     // If the categoryId is not the same as the selectedCategoryId, reset the brandId, modelId and variantId
     if (categoryId !== selectedCategoryId) {
       resetStore(NavigationDestination.Categories)
+      // Eliminate the forward navigation history
     }
   }
 

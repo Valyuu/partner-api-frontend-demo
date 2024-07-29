@@ -19,12 +19,6 @@ export const questionResultsState = createPersistedStore<QuestionResultsStateTyp
   QUESTION_RESULTS_STATE_DEFAULT
 )
 
-if (import.meta.env.DEV) {
-  import('valtio/utils').then(({ devtools }) => {
-    devtools(questionResultsState, { name: 'questionResultsState', enabled: true })
-  })
-}
-
 export const QUESTION_SECTION_STATE_DEFAULT: QuestionSectionStateType = {
   current: QuestionSection.Attribute,
   index: 0,
@@ -36,9 +30,3 @@ export const QUESTION_SECTION_STATE_DEFAULT: QuestionSectionStateType = {
 }
 
 export const questionSectionState = proxy<QuestionSectionStateType>(QUESTION_SECTION_STATE_DEFAULT)
-
-if (import.meta.env.DEV) {
-  import('valtio/utils').then(({ devtools }) => {
-    devtools(questionSectionState, { name: 'questionSectionState', enabled: true })
-  })
-}
