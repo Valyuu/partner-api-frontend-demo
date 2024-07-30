@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { ModelQuestion } from '~/components'
+import { Error, Loading, ModelPageContent } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE } from '~/constants'
 import { useGetModels } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
@@ -59,7 +59,7 @@ export const ModelsPage: FC = () => {
   const handleModelSelect = (selectedModelId: string) => {
     productSelectionState.modelId = selectedModelId
     if (selectedModelId !== modelId) {
-      // If the modelId is not the same as the selectedModelId, reset the variantId
+      // If the modelId is not the same as the selectedModelId, reset the question results
       resetStore(NavigationDestination.Models)
       // Eliminate the forward navigation history
     }
@@ -73,12 +73,12 @@ export const ModelsPage: FC = () => {
   })
 
   if (isLoading) {
-    return <div className="text-center">Modellen laden...</div>
+    return <Loading />
   }
 
   if (isError) {
-    return <div className="text-center text-red-500">Fout bij het laden van modellen</div>
+    return <Error />
   }
 
-  return <ModelQuestion data={data?.data} currentValue={modelId} onSelect={handleModelSelect} />
+  return <ModelPageContent data={data?.data} currentValue={modelId} onSelect={handleModelSelect} />
 }

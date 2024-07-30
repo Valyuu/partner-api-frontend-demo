@@ -7,7 +7,6 @@ export const PRODUCT_SELECTION_STATE_DEFAULT: ProductSelectionStateType = {
   categoryId: undefined,
   brandId: undefined,
   modelId: undefined,
-  variantId: undefined,
 }
 
 export const productSelectionState = createPersistedStore<ProductSelectionStateType>(

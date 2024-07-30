@@ -35,7 +35,7 @@ export const progressBarState = proxy<ProgressBarStateType>({
       ((questionResultsState.isFunctional ?? true)
         ? questionSectionState.questionCount[QuestionSection.Condition] /* condition */
         : 1) /* problem */ +
-      1
-    ) /* confirmation */
+      1 /* confirmation */
+    )
   },
 })

@@ -6,7 +6,7 @@ import { QuestionComponentProps } from '~/interfaces'
 export interface ProblemQuestionProps
   extends QuestionComponentProps<Components.Schemas.PartnerV1GetQuestionsItemProblemQuestionsItemOutput[], string[]> {}
 
-export const ProblemQuestion = ({ data, currentValue, onSelect }: ProblemQuestionProps) => {
+export const ProblemPageContent = ({ data, currentValue, onSelect }: ProblemQuestionProps) => {
   const [selectedProblems, setSelectedProblems] = useState(currentValue || [])
 
   if (!data) {

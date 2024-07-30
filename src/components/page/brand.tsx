@@ -4,7 +4,7 @@ import { cn } from '~/utils'
 export interface BrandQuestionProps
   extends QuestionComponentProps<Components.Schemas.PartnerV1GetBrandsItemOutput[], string> {}
 
-export const BrandQuestion = ({ data, currentValue: brandId, onSelect }: BrandQuestionProps) => {
+export const BrandPageContent = ({ data, currentValue: brandId, onSelect }: BrandQuestionProps) => {
   if (!data) {
     return null
   }

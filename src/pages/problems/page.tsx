@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { ProblemQuestion } from '~/components'
+import { Error, Loading, ProblemPageContent } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE, QuestionSection } from '~/constants'
 import { useGetProblemQuestions } from '~/queries'
 import {
@@ -28,7 +28,7 @@ export const ProblemsPage: FC = () => {
 
   const { [QuestionSection.Problem]: problemResults, isFunctional } = useSnapshot(questionResultsState)
 
-  const currentValue = [...problemResults]
+  const currentValue = problemResults as string[]
 
   const { data, isLoading, isError } = useGetProblemQuestions({
     lang: QUERY_LANGUAGE,
@@ -54,7 +54,7 @@ export const ProblemsPage: FC = () => {
     questionSectionState.index = 0
 
     progressBarState.currentStep = currentStep
-  }, [location.pathname, location.search])
+  }, [])
 
   const goToPreviousPage = () => {
     if (window.history.length > 1) {
@@ -65,7 +65,7 @@ export const ProblemsPage: FC = () => {
   }
 
   const goToNextPage = () => {
-    navigate(NavigationDestination.Confirmation as const)
+    navigate(NavigationDestination.Confirmation)
   }
 
   useLayoutEffect(() => {
@@ -86,23 +86,19 @@ export const ProblemsPage: FC = () => {
         },
       },
     })
-  }, [currentValue, location.pathname, location.search, data])
+  }, [currentValue])
 
   if (isLoading) {
-    return <div className="text-center">Vragen laden...</div>
+    return <Loading />
   }
 
   if (isError) {
-    return <div className="text-center text-red-500">Fout bij het laden van vragen</div>
+    return <Error />
   }
 
   const handleProblemSelect = (problems: string[]) => {
     questionResultsState[QuestionSection.Problem] = problems
   }
 
-  return (
-    <div className="p-4">
-      <ProblemQuestion data={data?.data} currentValue={currentValue} onSelect={handleProblemSelect} />
-    </div>
-  )
+  return <ProblemPageContent data={data?.data} currentValue={currentValue} onSelect={handleProblemSelect} />
 }

@@ -4,7 +4,7 @@ import { cn } from '~/utils'
 export interface CategoryQuestionProps
   extends QuestionComponentProps<Components.Schemas.PartnerV1GetCategoriesItemOutput[], string> {}
 
-export const CategoryQuestion = ({ data, currentValue: categoryId, onSelect }: CategoryQuestionProps) => {
+export const CategoryPageContent = ({ data, currentValue: categoryId, onSelect }: CategoryQuestionProps) => {
   if (!data) {
     return null
   }

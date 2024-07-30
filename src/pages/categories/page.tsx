@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { CategoryQuestion, Error, Loading } from '~/components'
+import { CategoryPageContent, Error, Loading } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE } from '~/constants'
 import { useGetCategories } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
@@ -33,7 +33,7 @@ export const CategoriesPage: FC = () => {
 
   const handleCategorySelect = (selectedCategoryId?: string) => {
     productSelectionState.categoryId = selectedCategoryId
-    // If the categoryId is not the same as the selectedCategoryId, reset the brandId, modelId and variantId
+    // If the categoryId is not the same as the selectedCategoryId, reset the brandId and modelId
     if (categoryId !== selectedCategoryId) {
       resetStore(NavigationDestination.Categories)
       // Eliminate the forward navigation history
@@ -50,5 +50,5 @@ export const CategoriesPage: FC = () => {
     return <Error />
   }
 
-  return <CategoryQuestion data={data?.data} currentValue={categoryId} onSelect={handleCategorySelect} />
+  return <CategoryPageContent data={data?.data} currentValue={categoryId} onSelect={handleCategorySelect} />
 }

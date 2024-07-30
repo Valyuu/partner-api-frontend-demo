@@ -1,3 +1,3 @@
 export * from './layout'
-export * from './question'
+export * from './page'
 export * from './ui'

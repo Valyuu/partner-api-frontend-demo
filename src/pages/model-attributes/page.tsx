@@ -1,9 +1,8 @@
-import { set } from 'lodash-es'
 import { FC, useEffect, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { ModelAttributeQuestion } from '~/components'
+import { Error, Loading, ModelAttributePageContent } from '~/components'
 import {
   NAVIGATION_BRANDS_PAGE_ENABLED,
   NAVIGATION_SHOW_NEXT_BUTTON_ON_QUESTIONS_PAGES,
@@ -20,7 +19,7 @@ import {
   questionSectionState,
   stepButtonsState,
 } from '~/stores'
-import { getVariantIdFromAttributeResults, resetStore } from '~/utils'
+import { resetStore } from '~/utils'
 
 export const ModelAttributesPage: FC = () => {
   const location = useLocation()
@@ -116,33 +115,22 @@ export const ModelAttributesPage: FC = () => {
   }, [attributeId, optionId, location.pathname, location.search, data])
 
   if (isLoading) {
-    return <div className="text-center">Vragen laden...</div>
+    return <Loading />
   }
 
   if (isError) {
-    return <div className="text-center text-red-500">Fout bij het laden van vragen</div>
+    return <Error />
   }
 
   const handleModelAttributeSelect = (
     selectedAttribute: QuestionResultsStateType[QuestionSection.Attribute][number]
   ) => {
-    // If it's the last question in the section, get variantId
-    if (sectionIndex === attributeCount - 1) {
-      const variantId = getVariantIdFromAttributeResults({
-        attributeResults: set([...attributeResults], sectionIndex, selectedAttribute),
-        generalData: data!.data,
-      })
-      if (!variantId) {
-        throw new Error('VariantId not found!')
-      }
-      productSelectionState.variantId = variantId
-    } else {
-      // If the attributeId and optionId are not the same as previously selected ones, reset the variantId and questionResults
-      if (attributeId === selectedAttribute.attributeId && optionId !== selectedAttribute.optionId) {
-        resetStore(NavigationDestination.ModelAttributes)
-        // Eliminate the forward navigation history
-      }
+    // If the attributeId and optionId are not the same as previously selected ones, reset the  questionResults
+    if (attributeId === selectedAttribute.attributeId && optionId !== selectedAttribute.optionId) {
+      resetStore(NavigationDestination.ModelAttributes)
+      // Eliminate the forward navigation history
     }
+
     questionResultsState[QuestionSection.Attribute][sectionIndex] = selectedAttribute
     if (
       selectedAttribute?.attributeId &&
@@ -157,13 +145,7 @@ export const ModelAttributesPage: FC = () => {
   const attributeCombinations = data?.data?.attributeCombinations
 
   // If there is only one combination and it has no choices, it means that the variantId is available
-  if (
-    attributeCombinations?.length === 1 &&
-    attributeCombinations[0].choices.length === 0 &&
-    attributeCombinations[0].variantId
-  ) {
-    const variantId = attributeCombinations[0].variantId
-    productSelectionState.variantId = variantId
+  if (attributeCombinations?.length === 1 && attributeCombinations[0].choices.length === 0) {
     // By replacing the current page with the next one, we prevent the user from going back to the current page
     setTimeout(() => goToNextPage(true))
     return null
@@ -195,8 +177,6 @@ export const ModelAttributesPage: FC = () => {
   }
 
   return (
-    <div className="p-4">
-      <ModelAttributeQuestion data={questionData} currentValue={currentValue} onSelect={handleModelAttributeSelect} />
-    </div>
+    <ModelAttributePageContent data={questionData} currentValue={currentValue} onSelect={handleModelAttributeSelect} />
   )
 }

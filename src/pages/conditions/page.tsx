@@ -2,7 +2,7 @@ import { FC, useEffect, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { ConditionQuestion } from '~/components'
+import { ConditionPageContent, Error, Loading } from '~/components'
 import {
   NAVIGATION_BRANDS_PAGE_ENABLED,
   NAVIGATION_SHOW_NEXT_BUTTON_ON_QUESTIONS_PAGES,
@@ -118,11 +118,11 @@ export const ModelConditionsPage: FC = () => {
   }, [conditionId, optionId, location.pathname, location.search, data])
 
   if (isLoading) {
-    return <div className="text-center">Vragen laden...</div>
+    return <Loading />
   }
 
   if (isError) {
-    return <div className="text-center text-red-500">Fout bij het laden van vragen</div>
+    return <Error />
   }
 
   const handleConditionSelect = (selectedCondition: QuestionResultsStateType[QuestionSection.Condition][number]) => {
@@ -137,12 +137,10 @@ export const ModelConditionsPage: FC = () => {
   }
 
   return (
-    <div className="p-4">
-      <ConditionQuestion
-        data={data?.data?.[sectionIndex]}
-        currentValue={currentValue}
-        onSelect={handleConditionSelect}
-      />
-    </div>
+    <ConditionPageContent
+      data={data?.data?.[sectionIndex]}
+      currentValue={currentValue}
+      onSelect={handleConditionSelect}
+    />
   )
 }

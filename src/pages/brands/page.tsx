@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
-import { BrandQuestion, Error, Loading } from '~/components'
+import { BrandPageContent, Error, Loading } from '~/components'
 import { NavigationDestination, QUERY_LANGUAGE } from '~/constants'
 import { useGetBrands } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
@@ -67,5 +67,5 @@ export const BrandsPage: FC = () => {
     }
   }
 
-  return <BrandQuestion data={data?.data} currentValue={brandId} onSelect={handleBrandSelect} />
+  return <BrandPageContent data={data?.data} currentValue={brandId} onSelect={handleBrandSelect} />
 }

@@ -1,25 +1,35 @@
-import { isFunction } from 'lodash-es'
-import { FC, useLayoutEffect } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
+import { ConfirmationPageContent, Error, Loading } from '~/components'
 import { NavigationDestination, QUERY_LANGUAGE, QuestionSection } from '~/constants'
-import { useGetVariantPrice } from '~/queries'
-import { productSelectionState, questionResultsState } from '~/stores'
+import { useGetTradeInItemData } from '~/queries'
+import {
+  productSelectionState,
+  progressBarState,
+  questionResultsState,
+  questionSectionState,
+  stepButtonsState,
+} from '~/stores'
+import { resetStore } from '~/utils'
 
 export const ConfirmationPage: FC = () => {
   const navigate = useNavigate()
 
+  const [tocAgreed, setTocAgreed] = useState(false)
+
+  const { condition: conditionStepCount } = useSnapshot(questionSectionState.questionCount)
+  const { modelId } = useSnapshot(productSelectionState)
   const questionResults = useSnapshot(questionResultsState)
   const { isFunctional } = questionResults
-  const { variantId } = useSnapshot(productSelectionState)
+  const { totalSteps } = useSnapshot(progressBarState)
 
-  questionResults.condition
-
-  const getVariantPriceInput = {
+  const { data, isLoading, isError } = useGetTradeInItemData({
     lang: QUERY_LANGUAGE,
-    variantId: variantId!,
     isProductFunctional: isFunctional!,
+    modelId: modelId!,
+    attributes: questionResults[QuestionSection.Attribute] as { attributeId: string; optionId: string }[],
     conditions: isFunctional
       ? (questionResults[QuestionSection.Condition] as {
           conditionId: string
@@ -27,39 +37,65 @@ export const ConfirmationPage: FC = () => {
         }[])
       : [],
     problems: isFunctional ? [] : (questionResults[QuestionSection.Problem] as string[]),
-    enabled: Boolean(variantId && isFunction !== undefined),
-  }
-  const { data, isLoading, isError } = useGetVariantPrice(getVariantPriceInput)
+    enabled: Boolean(modelId && isFunctional !== undefined),
+  })
 
   useLayoutEffect(() => {
-    if (!variantId) {
+    if (!modelId) {
       setTimeout(() => navigate(NavigationDestination.Models))
       return
     }
-    // navigationState.buttons.prev.hidden = false
-    // navigationState.buttons.prev.disabled = false
-    // navigationState.buttons.prev.navigateTo = window.history.length
-    //   ? {
-    //       destination: NavigationDestination.HistoryBack,
-    //       index: undefined,
-    //     }
-    //   : isFunctional
-    //     ? {
-    //         destination: NavigationDestination.Conditions,
-    //         index: questionResults[QuestionSection.Condition].length - 1,
-    //       }
-    //     : {
-    //         destination: NavigationDestination.Problems,
-    //         index: undefined,
-    //       }
-    // navigationState.buttons.next.hidden = true
-    // navigationState.progress.currentStep = Object.values(stepCount).reduce((acc, val) => acc + val, 0)
-  }, [])
 
-  return (
-    <div className="p-4">
-      Answers:
-      <pre>{JSON.stringify(questionResults)}</pre>
-    </div>
-  )
+    progressBarState.currentStep = totalSteps
+  }, [totalSteps])
+
+  useLayoutEffect(() => {
+    Object.assign(stepButtonsState, {
+      prev: {
+        hidden: false,
+        disabled: false,
+        onClick: () => {
+          if (window.history.length > 1) {
+            navigate(NavigationDestination.HistoryBack)
+          } else if (isFunctional) {
+            navigate({
+              pathname: NavigationDestination.Conditions as const,
+              search: `?index=${conditionStepCount - 1}`,
+            })
+          } else {
+            navigate(NavigationDestination.Problems)
+          }
+        },
+      },
+      next: {
+        hidden: false,
+        disabled: !tocAgreed || !data,
+        onClick: () => {
+          alert('Data collected for createTradeIn has been logged to the console.')
+          console.log({
+            variantId: data?.data.variantId,
+            price: data?.data.price,
+            isProductFunctional: data?.data.isProductFunctional,
+            conditionCombinationId: data?.data.conditionCombinationId,
+            problemIds: data?.data.problemIds,
+          })
+        },
+      },
+    })
+  }, [conditionStepCount, isFunctional, tocAgreed, data])
+
+  if (isLoading) {
+    return <Loading />
+  }
+
+  if (isError) {
+    return <Error />
+  }
+
+  const removeTradeInItem = () => {
+    resetStore()
+    navigate(NavigationDestination.Categories)
+  }
+
+  return <ConfirmationPageContent data={data?.data} setTocAgreed={setTocAgreed} removeTradeInItem={removeTradeInItem} />
 }

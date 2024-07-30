@@ -3,13 +3,13 @@ import { QuestionSection } from '~/constants'
 import { QuestionComponentProps, QuestionResultsStateType } from '~/interfaces'
 import { cn } from '~/utils'
 
-export interface ConditionQuestionProps
+export interface ModelAttributeQuestionProps
   extends QuestionComponentProps<
-    Components.Schemas.PartnerV1GetQuestionsItemConditionQuestionsItemOutput,
-    QuestionResultsStateType[QuestionSection.Condition][number]
+    Components.Schemas.PartnerV1GetQuestionsItemAttributeQuestionsItemOutput,
+    QuestionResultsStateType[QuestionSection.Attribute][number]
   > {}
 
-export const ConditionQuestion = ({ data, currentValue, onSelect }: ConditionQuestionProps) => {
+export const ModelAttributePageContent = ({ data, currentValue, onSelect }: ModelAttributeQuestionProps) => {
   if (!data) {
     return null
   }
@@ -26,7 +26,7 @@ export const ConditionQuestion = ({ data, currentValue, onSelect }: ConditionQue
         onClick={(event) => {
           if (event.target instanceof HTMLButtonElement) {
             const optionId = event.target.value
-            onSelect({ conditionId: data.id, optionId })
+            onSelect({ attributeId: data.id, optionId })
           }
         }}
         value={currentValue?.optionId}
@@ -42,18 +42,8 @@ export const ConditionQuestion = ({ data, currentValue, onSelect }: ConditionQue
             )}
           >
             <RadioGroupItem value={option.id} id={option.id} className="ml-4" />
-            <Label
-              htmlFor={option.id}
-              className="flex w-full grow cursor-pointer flex-col items-start space-x-3 space-y-3 py-5"
-            >
-              {option.description ? (
-                <>
-                  <strong className="ml-3">{option.name}</strong>
-                  <p>{option.description}</p>
-                </>
-              ) : (
-                option.name
-              )}
+            <Label htmlFor={option.id} className="grow cursor-pointer items-center space-x-3 py-5 font-medium">
+              {option.name}
             </Label>
           </div>
         ))}

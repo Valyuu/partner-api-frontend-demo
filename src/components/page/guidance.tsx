@@ -11,7 +11,7 @@ export interface ModelAttributesQuestionProps
     GuidanceQuestionOptions
   > {}
 
-export const GuidanceQuestion = ({ data, currentValue, onSelect }: ModelAttributesQuestionProps) => {
+export const GuidancePageContent = ({ data, currentValue, onSelect }: ModelAttributesQuestionProps) => {
   if (!data) {
     return null
   }

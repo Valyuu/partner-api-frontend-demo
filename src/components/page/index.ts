@@ -1,6 +1,7 @@
 export * from './brand.tsx'
 export * from './category.tsx'
 export * from './condition.tsx'
+export * from './confirmation.tsx'
 export * from './guidance.tsx'
 export * from './model.tsx'
 export * from './model-attribute.tsx'

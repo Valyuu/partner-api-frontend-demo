@@ -2,7 +2,7 @@ import { FC, useEffect, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { snapshot, useSnapshot } from 'valtio'
 
-import { GuidanceQuestion } from '~/components'
+import { Error, GuidancePageContent, Loading } from '~/components'
 import {
   GuidanceQuestionOptions,
   NAVIGATION_BRANDS_PAGE_ENABLED,
@@ -117,11 +117,11 @@ export const ModelGuidancesPage: FC = () => {
   }, [currentValue, location.pathname, location.search, data])
 
   if (isLoading) {
-    return <div className="text-center">Vragen laden...</div>
+    return <Loading />
   }
 
   if (isError) {
-    return <div className="text-center text-red-500">Fout bij het laden van vragen</div>
+    return <Error />
   }
 
   const handleGuidanceSelect = (value: GuidanceQuestionOptions) => {
@@ -145,9 +145,5 @@ export const ModelGuidancesPage: FC = () => {
   }
 
   const questionData = data?.data?.guidanceQuestions[sectionIndex]
-  return (
-    <div className="p-4">
-      <GuidanceQuestion data={questionData} currentValue={currentValue} onSelect={handleGuidanceSelect} />
-    </div>
-  )
+  return <GuidancePageContent data={questionData} currentValue={currentValue} onSelect={handleGuidanceSelect} />
 }

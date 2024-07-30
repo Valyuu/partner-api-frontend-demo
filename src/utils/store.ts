@@ -16,8 +16,13 @@ export const createPersistedStore = <T extends object>(key: string, initialState
   return state
 }
 
-export const resetStore = (at: NavigationDestination) => {
+export const resetStore = (at?: NavigationDestination) => {
   switch (at) {
+    case undefined:
+      productSelectionState.categoryId = undefined
+      questionResultsState[QuestionSection.Condition] = []
+      questionResultsState[QuestionSection.Problem] = []
+      questionResultsState.isFunctional = undefined
     case NavigationDestination.Categories:
       productSelectionState.brandId = undefined
     case NavigationDestination.Brands:
@@ -26,7 +31,6 @@ export const resetStore = (at: NavigationDestination) => {
       questionResultsState[QuestionSection.Attribute] = []
       questionResultsState[QuestionSection.Guidance] = []
     case NavigationDestination.ModelAttributes:
-      productSelectionState.variantId = undefined
       Object.assign(questionResultsState, QUESTION_RESULTS_STATE_DEFAULT)
       break
     case NavigationDestination.Guidances:
