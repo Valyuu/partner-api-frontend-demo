@@ -1,10 +1,19 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { FC, lazy, Suspense, useEffect } from 'react'
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
 import * as pageExports from '~/pages'
 
+import { NavigationDestination } from './constants'
 import { MainLayout } from './layouts'
+
+const RedirectToCategories: FC = () => {
+  const navigate = useNavigate()
+  useEffect(() => {
+    navigate(NavigationDestination.Categories)
+  }, [])
+  return null
+}
 
 const pageRoutes = Object.entries(pageExports)
   .filter(([key]) => key.endsWith('Route'))
@@ -26,6 +35,7 @@ const App = () => {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <Routes>
+          <Route path="/" element={<RedirectToCategories />} />
           <Route element={<MainLayout />}>
             {pageRoutes.map((page) => (
               <Route path={page.path} element={<page.component />} key={page.path} />
