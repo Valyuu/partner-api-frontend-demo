@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, Checkbox, Label } from '~/components'
 
 export interface ConfirmationQuestionProps {
-  data?: Components.Schemas.PartnerV1GetTradeInItemDataOutput
+  data?: Components.Schemas.V1GetTradeInItemDataOutput
   setTocAgreed: (value: boolean) => void
   removeTradeInItem: () => void
 }

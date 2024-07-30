@@ -7,7 +7,7 @@ import { cn } from '~/utils'
 
 export interface ModelAttributesQuestionProps
   extends QuestionComponentProps<
-    Components.Schemas.PartnerV1GetQuestionsItemGuidanceQuestionsItemOutput,
+    Components.Schemas.V1GetQuestionsItemGuidanceQuestionsItemOutput,
     GuidanceQuestionOptions
   > {}
 

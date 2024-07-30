@@ -6,15 +6,15 @@ export const useGetConditionQuestions = ({
   modelId,
   lang,
   enabled = true,
-}: Components.Schemas.PartnerV1GetQuestionsInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetQuestionsInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetConditionQuestionsOutput,
+    Components.Schemas.V1WrappedGetConditionQuestionsOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetConditionQuestionsOutput,
-    [string, Components.Schemas.PartnerV1GetQuestionsInput]
+    Components.Schemas.V1WrappedGetConditionQuestionsOutput,
+    [string, Components.Schemas.V1GetQuestionsInput]
   >({
     queryKey: ['condition-questions', { modelId, lang }],
     queryFn: async () => {

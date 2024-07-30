@@ -2,7 +2,7 @@ import { QuestionComponentProps } from '~/interfaces'
 import { cn } from '~/utils'
 
 export interface BrandQuestionProps
-  extends QuestionComponentProps<Components.Schemas.PartnerV1GetBrandsItemOutput[], string> {}
+  extends QuestionComponentProps<Components.Schemas.V1GetBrandsItemOutput[], string> {}
 
 export const BrandPageContent = ({ data, currentValue: brandId, onSelect }: BrandQuestionProps) => {
   if (!data) {

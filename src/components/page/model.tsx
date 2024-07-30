@@ -17,7 +17,7 @@ import { QuestionComponentProps } from '~/interfaces'
 import { cn } from '~/utils'
 
 export interface ModelQuestionProps
-  extends QuestionComponentProps<Components.Schemas.PartnerV1GetModelsItemOutput[], string> {}
+  extends QuestionComponentProps<Components.Schemas.V1GetModelsItemOutput[], string> {}
 
 export const ModelPageContent = ({ data, currentValue: modelId, onSelect }: ModelQuestionProps) => {
   const [open, setOpen] = useState(false)

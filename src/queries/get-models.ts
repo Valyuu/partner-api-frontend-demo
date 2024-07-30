@@ -5,15 +5,15 @@ import { QUERY_CACHE_TIME } from '~/constants'
 export const useGetModels = ({
   enabled = true,
   ...params
-}: Components.Schemas.PartnerV1GetModelsInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetModelsInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetModelsOutput,
+    Components.Schemas.V1WrappedGetModelsOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetModelsOutput,
-    [string, Components.Schemas.PartnerV1GetModelsInput]
+    Components.Schemas.V1WrappedGetModelsOutput,
+    [string, Components.Schemas.V1GetModelsInput]
   >({
     queryKey: ['models', params],
     queryFn: async () => {

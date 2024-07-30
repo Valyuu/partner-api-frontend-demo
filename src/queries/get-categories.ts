@@ -5,15 +5,15 @@ import { QUERY_CACHE_TIME } from '~/constants'
 export const useGetCategories = ({
   lang,
   enabled = true,
-}: Components.Schemas.PartnerV1GetCategoriesInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetCategoriesInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetCategoriesOutput,
+    Components.Schemas.V1WrappedGetCategoriesOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetCategoriesOutput,
-    [string, Components.Schemas.PartnerV1GetCategoriesInput]
+    Components.Schemas.V1WrappedGetCategoriesOutput,
+    [string, Components.Schemas.V1GetCategoriesInput]
   >({
     queryKey: ['categories', { lang }],
     queryFn: async () => {

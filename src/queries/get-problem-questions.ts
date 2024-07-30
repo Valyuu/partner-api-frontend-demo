@@ -6,15 +6,15 @@ export const useGetProblemQuestions = ({
   modelId,
   lang,
   enabled = true,
-}: Components.Schemas.PartnerV1GetQuestionsInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetQuestionsInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetProblemQuestionsOutput,
+    Components.Schemas.V1WrappedGetProblemQuestionsOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetProblemQuestionsOutput,
-    [string, Components.Schemas.PartnerV1GetQuestionsInput]
+    Components.Schemas.V1WrappedGetProblemQuestionsOutput,
+    [string, Components.Schemas.V1GetQuestionsInput]
   >({
     queryKey: ['problem-questions', { modelId, lang }],
     queryFn: async () => {

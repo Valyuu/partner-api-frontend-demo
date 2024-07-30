@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
-export const useCreateTradeIn = (input: Components.Schemas.PartnerV1CreateTradeInInput) => {
+export const useCreateTradeIn = (input: Components.Schemas.V1CreateTradeInInput) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
-  return useMutation<Components.Schemas.WrappedPartnerV1CreateTradeInOutput, Error>({
+  return useMutation<Components.Schemas.V1WrappedCreateTradeInOutput, Error>({
     mutationFn: async () => {
       const url = `${baseUrl}/v1/trade-in`
 

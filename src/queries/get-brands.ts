@@ -6,15 +6,15 @@ export const useGetBrands = ({
   categoryId,
   lang,
   enabled = true,
-}: Components.Schemas.PartnerV1GetBrandsInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetBrandsInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetBrandsOutput,
+    Components.Schemas.V1WrappedGetBrandsOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetBrandsOutput,
-    [string, Components.Schemas.PartnerV1GetBrandsInput]
+    Components.Schemas.V1WrappedGetBrandsOutput,
+    [string, Components.Schemas.V1GetBrandsInput]
   >({
     queryKey: ['brands', { categoryId, lang }],
     queryFn: async () => {

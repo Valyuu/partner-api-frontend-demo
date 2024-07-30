@@ -6,15 +6,15 @@ export const useGetGeneralQuestions = ({
   modelId,
   lang,
   enabled = true,
-}: Components.Schemas.PartnerV1GetQuestionsInput & { enabled?: boolean }) => {
+}: Components.Schemas.V1GetQuestionsInput & { enabled?: boolean }) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
   const authKey = import.meta.env.VITE_API_AUTH_KEY
 
   return useQuery<
-    Components.Schemas.WrappedPartnerV1GetGeneralQuestionsOutput,
+    Components.Schemas.V1WrappedGetGeneralQuestionsOutput,
     Error,
-    Components.Schemas.WrappedPartnerV1GetGeneralQuestionsOutput,
-    [string, Components.Schemas.PartnerV1GetQuestionsInput]
+    Components.Schemas.V1WrappedGetGeneralQuestionsOutput,
+    [string, Components.Schemas.V1GetQuestionsInput]
   >({
     queryKey: ['general-questions', { modelId, lang }],
     queryFn: async () => {

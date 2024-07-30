@@ -5,7 +5,7 @@ import { cn } from '~/utils'
 
 export interface ModelAttributeQuestionProps
   extends QuestionComponentProps<
-    Components.Schemas.PartnerV1GetQuestionsItemAttributeQuestionsItemOutput,
+    Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput,
     QuestionResultsStateType[QuestionSection.Attribute][number]
   > {}
 

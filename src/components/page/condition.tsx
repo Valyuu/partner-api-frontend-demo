@@ -5,7 +5,7 @@ import { cn } from '~/utils'
 
 export interface ConditionQuestionProps
   extends QuestionComponentProps<
-    Components.Schemas.PartnerV1GetQuestionsItemConditionQuestionsItemOutput,
+    Components.Schemas.V1GetQuestionsItemConditionQuestionsItemOutput,
     QuestionResultsStateType[QuestionSection.Condition][number]
   > {}
 

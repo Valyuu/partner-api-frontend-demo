@@ -1,6 +1,18 @@
 declare namespace Components {
   namespace Schemas {
-    export interface PartnerV1CreateTradeInBankAccountInput {
+    /**
+     * The time unit for the payment time
+     */
+    export type PaymentTimeUnit = 'HOURS' | 'DAYS'
+    /**
+     * Payment type, defaults to BANK_TRANSFER
+     */
+    export type SalePaymentType = 'BANK_TRANSFER' | 'DONATION' | 'PARTNER_WEBHOOK'
+    /**
+     * Language code. Defaults to "nl"
+     */
+    export type SupportedLangues = 'en' | 'nl' | 'de'
+    export interface V1CreateTradeInBankAccountInput {
       /**
        * Name of the account holder
        */
@@ -10,7 +22,7 @@ declare namespace Components {
        */
       accountNumber: string
     }
-    export interface PartnerV1CreateTradeInInput {
+    export interface V1CreateTradeInInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
        * Email of the seller
@@ -68,7 +80,7 @@ declare namespace Components {
       /**
        * List of items to be sold
        */
-      items: PartnerV1CreateTradeInItemInput[]
+      items: V1CreateTradeInItemInput[]
       paymentType?: /* Payment type, defaults to BANK_TRANSFER */ SalePaymentType
       /**
        * Bank account information of the seller. Only required if paymentType is set to BANK_TRANSFER
@@ -88,7 +100,7 @@ declare namespace Components {
        */
       sendCustomerEmail?: boolean
     }
-    export interface PartnerV1CreateTradeInItemInput {
+    export interface V1CreateTradeInItemInput {
       /**
        * Unique identifier for the variant
        */
@@ -110,7 +122,7 @@ declare namespace Components {
        */
       problemIds?: string /* uuid */[]
     }
-    export interface PartnerV1CreateTradeInOutput {
+    export interface V1CreateTradeInOutput {
       /**
        * Unique identifier for the trade-in
        */
@@ -124,7 +136,7 @@ declare namespace Components {
        */
       shippingLabel: string
     }
-    export interface PartnerV1CreateTradeInShippingAddressInput {
+    export interface V1CreateTradeInShippingAddressInput {
       /**
        * First name of the recipient
        */
@@ -166,14 +178,14 @@ declare namespace Components {
        */
       phoneNumber: string
     }
-    export interface PartnerV1GetBrandsInput {
+    export interface V1GetBrandsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
        * Category ID to filter brands
        */
       categoryId: string
     }
-    export interface PartnerV1GetBrandsItemOutput {
+    export interface V1GetBrandsItemOutput {
       /**
        * Unique identifier for the brand
        */
@@ -187,10 +199,10 @@ declare namespace Components {
        */
       image: string
     }
-    export interface PartnerV1GetCategoriesInput {
+    export interface V1GetCategoriesInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
     }
-    export interface PartnerV1GetCategoriesItemOutput {
+    export interface V1GetCategoriesItemOutput {
       /**
        * Unique identifier for the category
        */
@@ -208,7 +220,7 @@ declare namespace Components {
        */
       image: string
     }
-    export interface PartnerV1GetGeneralQuestionsOutput {
+    export interface V1GetGeneralQuestionsOutput {
       /**
        * Name of the model
        */
@@ -224,17 +236,17 @@ declare namespace Components {
       /**
        * Attribute questions for the model
        */
-      attributeQuestions: PartnerV1GetQuestionsItemAttributeQuestionsItemOutput[]
+      attributeQuestions: V1GetQuestionsItemAttributeQuestionsItemOutput[]
       /**
        * Attribute combinations for the model
        */
-      attributeCombinations: PartnerV1GetQuestionsItemAttributeCombinationsItemOutput[]
+      attributeCombinations: V1GetQuestionsItemAttributeCombinationsItemOutput[]
       /**
        * Guidance questions for the model
        */
-      guidanceQuestions: PartnerV1GetQuestionsItemGuidanceQuestionsItemOutput[]
+      guidanceQuestions: V1GetQuestionsItemGuidanceQuestionsItemOutput[]
     }
-    export interface PartnerV1GetModelsInput {
+    export interface V1GetModelsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
        * Category ID to filter models
@@ -249,7 +261,7 @@ declare namespace Components {
        */
       onlyShowEligible?: boolean
     }
-    export interface PartnerV1GetModelsItemOutput {
+    export interface V1GetModelsItemOutput {
       /**
        * Unique identifier for the model
        */
@@ -263,14 +275,14 @@ declare namespace Components {
        */
       image: string
     }
-    export interface PartnerV1GetQuestionsInput {
+    export interface V1GetQuestionsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
        * Model ID to filter questions
        */
       modelId: string
     }
-    export interface PartnerV1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput {
+    export interface V1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput {
       /**
        * Unique identifier for the attribute
        */
@@ -280,7 +292,7 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
-    export interface PartnerV1GetQuestionsItemAttributeCombinationsItemOutput {
+    export interface V1GetQuestionsItemAttributeCombinationsItemOutput {
       /**
        * Unique identifier for the combination
        */
@@ -288,9 +300,9 @@ declare namespace Components {
       /**
        * Choices for the attribute combination
        */
-      choices: PartnerV1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput[]
+      choices: V1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput[]
     }
-    export interface PartnerV1GetQuestionsItemAttributeQuestionsItemOptionItemOutput {
+    export interface V1GetQuestionsItemAttributeQuestionsItemOptionItemOutput {
       /**
        * Unique identifier for the option
        */
@@ -300,7 +312,7 @@ declare namespace Components {
        */
       name: string
     }
-    export interface PartnerV1GetQuestionsItemAttributeQuestionsItemOutput {
+    export interface V1GetQuestionsItemAttributeQuestionsItemOutput {
       /**
        * Unique identifier for the attribute question
        */
@@ -320,9 +332,9 @@ declare namespace Components {
       /**
        * Options for the attribute question
        */
-      options: PartnerV1GetQuestionsItemAttributeQuestionsItemOptionItemOutput[]
+      options: V1GetQuestionsItemAttributeQuestionsItemOptionItemOutput[]
     }
-    export interface PartnerV1GetQuestionsItemConditionQuestionsItemOptionsItemOutput {
+    export interface V1GetQuestionsItemConditionQuestionsItemOptionsItemOutput {
       /**
        * Unique identifier for the option
        */
@@ -336,7 +348,7 @@ declare namespace Components {
        */
       description: string
     }
-    export interface PartnerV1GetQuestionsItemConditionQuestionsItemOutput {
+    export interface V1GetQuestionsItemConditionQuestionsItemOutput {
       /**
        * Unique identifier for the condition question
        */
@@ -356,9 +368,9 @@ declare namespace Components {
       /**
        * Options for the condition question
        */
-      options: PartnerV1GetQuestionsItemConditionQuestionsItemOptionsItemOutput[]
+      options: V1GetQuestionsItemConditionQuestionsItemOptionsItemOutput[]
     }
-    export interface PartnerV1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput {
+    export interface V1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput {
       /**
        * Unique identifier for the image text
        */
@@ -372,7 +384,7 @@ declare namespace Components {
        */
       image: string
     }
-    export interface PartnerV1GetQuestionsItemGuidanceQuestionsItemOutput {
+    export interface V1GetQuestionsItemGuidanceQuestionsItemOutput {
       /**
        * Unique identifier for the guidance question
        */
@@ -388,9 +400,9 @@ declare namespace Components {
       /**
        * Image texts for the guidance question
        */
-      imageTexts: PartnerV1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput[]
+      imageTexts: V1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput[]
     }
-    export interface PartnerV1GetQuestionsItemProblemQuestionsItemOutput {
+    export interface V1GetQuestionsItemProblemQuestionsItemOutput {
       /**
        * Unique identifier for the problem question
        */
@@ -400,7 +412,7 @@ declare namespace Components {
        */
       name: string
     }
-    export interface PartnerV1GetTradeInItemDataAttributeItemInput {
+    export interface V1GetTradeInItemDataAttributeItemInput {
       /**
        * Unique identifier for the condition
        */
@@ -410,7 +422,7 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
-    export interface PartnerV1GetTradeInItemDataConditionItemInput {
+    export interface V1GetTradeInItemDataConditionItemInput {
       /**
        * Unique identifier for the condition
        */
@@ -420,7 +432,7 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
-    export interface PartnerV1GetTradeInItemDataInput {
+    export interface V1GetTradeInItemDataInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
        * Indicates if the product is functional
@@ -433,17 +445,17 @@ declare namespace Components {
       /**
        * Model attributes
        */
-      attributes: PartnerV1GetTradeInItemDataAttributeItemInput[]
+      attributes: V1GetTradeInItemDataAttributeItemInput[]
       /**
        * Conditions of the product if functional
        */
-      conditions: PartnerV1GetTradeInItemDataConditionItemInput[]
+      conditions: V1GetTradeInItemDataConditionItemInput[]
       /**
        * Problems of the product if not functional
        */
       problems: string /* uuid */[]
     }
-    export interface PartnerV1GetTradeInItemDataOutput {
+    export interface V1GetTradeInItemDataOutput {
       /**
        * Unique identifier for the variant (used as an input for the API call "createTradeIn")
        */
@@ -494,19 +506,7 @@ declare namespace Components {
       maxPaymentTime: number
       paymentTimeUnit: /* The time unit for the payment time */ PaymentTimeUnit
     }
-    /**
-     * The time unit for the payment time
-     */
-    export type PaymentTimeUnit = 'HOURS' | 'DAYS'
-    /**
-     * Payment type, defaults to BANK_TRANSFER
-     */
-    export type SalePaymentType = 'BANK_TRANSFER' | 'DONATION' | 'PARTNER_WEBHOOK'
-    /**
-     * Language code. Defaults to "nl"
-     */
-    export type SupportedLangues = 'en' | 'nl' | 'de'
-    export interface WrappedPartnerV1CreateTradeInOutput {
+    export interface V1WrappedCreateTradeInOutput {
       /**
        * Indicates the success of the operation
        */
@@ -537,7 +537,7 @@ declare namespace Components {
         shippingLabel: string
       }
     }
-    export interface WrappedPartnerV1GetBrandsOutput {
+    export interface V1WrappedGetBrandsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -553,9 +553,9 @@ declare namespace Components {
       /**
        * Brand list
        */
-      data: PartnerV1GetBrandsItemOutput[]
+      data: V1GetBrandsItemOutput[]
     }
-    export interface WrappedPartnerV1GetCategoriesOutput {
+    export interface V1WrappedGetCategoriesOutput {
       /**
        * Indicates the success of the operation
        */
@@ -571,9 +571,9 @@ declare namespace Components {
       /**
        * Category list
        */
-      data: PartnerV1GetCategoriesItemOutput[]
+      data: V1GetCategoriesItemOutput[]
     }
-    export interface WrappedPartnerV1GetConditionQuestionsOutput {
+    export interface V1WrappedGetConditionQuestionsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -589,9 +589,9 @@ declare namespace Components {
       /**
        * Condition questions for the model
        */
-      data: PartnerV1GetQuestionsItemConditionQuestionsItemOutput[]
+      data: V1GetQuestionsItemConditionQuestionsItemOutput[]
     }
-    export interface WrappedPartnerV1GetGeneralQuestionsOutput {
+    export interface V1WrappedGetGeneralQuestionsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -623,18 +623,18 @@ declare namespace Components {
         /**
          * Attribute questions for the model
          */
-        attributeQuestions: PartnerV1GetQuestionsItemAttributeQuestionsItemOutput[]
+        attributeQuestions: V1GetQuestionsItemAttributeQuestionsItemOutput[]
         /**
          * Attribute combinations for the model
          */
-        attributeCombinations: PartnerV1GetQuestionsItemAttributeCombinationsItemOutput[]
+        attributeCombinations: V1GetQuestionsItemAttributeCombinationsItemOutput[]
         /**
          * Guidance questions for the model
          */
-        guidanceQuestions: PartnerV1GetQuestionsItemGuidanceQuestionsItemOutput[]
+        guidanceQuestions: V1GetQuestionsItemGuidanceQuestionsItemOutput[]
       }
     }
-    export interface WrappedPartnerV1GetModelsOutput {
+    export interface V1WrappedGetModelsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -650,9 +650,9 @@ declare namespace Components {
       /**
        * Model list
        */
-      data: PartnerV1GetModelsItemOutput[]
+      data: V1GetModelsItemOutput[]
     }
-    export interface WrappedPartnerV1GetProblemQuestionsOutput {
+    export interface V1WrappedGetProblemQuestionsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -668,9 +668,9 @@ declare namespace Components {
       /**
        * Problem questions for the model
        */
-      data: PartnerV1GetQuestionsItemProblemQuestionsItemOutput[]
+      data: V1GetQuestionsItemProblemQuestionsItemOutput[]
     }
-    export interface WrappedPartnerV1GetTradeInItemDataOutput {
+    export interface V1WrappedGetTradeInItemDataOutput {
       /**
        * Indicates the success of the operation
        */
@@ -741,13 +741,13 @@ declare namespace Components {
   }
 }
 declare namespace Paths {
-  namespace PartnerV1ControllerCreateTradeIn {
-    export type RequestBody = Components.Schemas.PartnerV1CreateTradeInInput
+  namespace V1ControllerCreateTradeIn {
+    export type RequestBody = Components.Schemas.V1CreateTradeInInput
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1CreateTradeInOutput
+      export type $200 = Components.Schemas.V1WrappedCreateTradeInOutput
     }
   }
-  namespace PartnerV1ControllerGetBrands {
+  namespace V1ControllerGetBrands {
     namespace Parameters {
       export type CategoryId = string
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
@@ -757,10 +757,10 @@ declare namespace Paths {
       categoryId: Parameters.CategoryId
     }
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetBrandsOutput
+      export type $200 = Components.Schemas.V1WrappedGetBrandsOutput
     }
   }
-  namespace PartnerV1ControllerGetCategories {
+  namespace V1ControllerGetCategories {
     namespace Parameters {
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
     }
@@ -768,23 +768,10 @@ declare namespace Paths {
       lang?: Parameters.Lang
     }
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetCategoriesOutput
+      export type $200 = Components.Schemas.V1WrappedGetCategoriesOutput
     }
   }
-  namespace PartnerV1ControllerGetConditionQuestions {
-    namespace Parameters {
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
-      export type ModelId = string
-    }
-    export interface QueryParameters {
-      lang?: Parameters.Lang
-      modelId: Parameters.ModelId
-    }
-    namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetConditionQuestionsOutput
-    }
-  }
-  namespace PartnerV1ControllerGetModelQuestions {
+  namespace V1ControllerGetConditionQuestions {
     namespace Parameters {
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
       export type ModelId = string
@@ -794,10 +781,23 @@ declare namespace Paths {
       modelId: Parameters.ModelId
     }
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetGeneralQuestionsOutput
+      export type $200 = Components.Schemas.V1WrappedGetConditionQuestionsOutput
     }
   }
-  namespace PartnerV1ControllerGetModels {
+  namespace V1ControllerGetModelQuestions {
+    namespace Parameters {
+      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type ModelId = string
+    }
+    export interface QueryParameters {
+      lang?: Parameters.Lang
+      modelId: Parameters.ModelId
+    }
+    namespace Responses {
+      export type $200 = Components.Schemas.V1WrappedGetGeneralQuestionsOutput
+    }
+  }
+  namespace V1ControllerGetModels {
     namespace Parameters {
       export type BrandId = string
       export type CategoryId = string
@@ -811,10 +811,10 @@ declare namespace Paths {
       onlyShowEligible?: Parameters.OnlyShowEligible
     }
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetModelsOutput
+      export type $200 = Components.Schemas.V1WrappedGetModelsOutput
     }
   }
-  namespace PartnerV1ControllerGetProblemQuestions {
+  namespace V1ControllerGetProblemQuestions {
     namespace Parameters {
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
       export type ModelId = string
@@ -824,10 +824,10 @@ declare namespace Paths {
       modelId: Parameters.ModelId
     }
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetProblemQuestionsOutput
+      export type $200 = Components.Schemas.V1WrappedGetProblemQuestionsOutput
     }
   }
-  namespace PartnerV1ControllerGetShippingLabel {
+  namespace V1ControllerGetShippingLabel {
     namespace Parameters {
       export type TradeInId = string // uuid
     }
@@ -839,10 +839,10 @@ declare namespace Paths {
       export interface $500 {}
     }
   }
-  namespace PartnerV1ControllerGetTradeInItemData {
-    export type RequestBody = Components.Schemas.PartnerV1GetTradeInItemDataInput
+  namespace V1ControllerGetTradeInItemData {
+    export type RequestBody = Components.Schemas.V1GetTradeInItemDataInput
     namespace Responses {
-      export type $200 = Components.Schemas.WrappedPartnerV1GetTradeInItemDataOutput
+      export type $200 = Components.Schemas.V1WrappedGetTradeInItemDataOutput
     }
   }
 }
