@@ -8,6 +8,12 @@ Technology stack: React, TypeScript, Vite, TailwindCSS, Shadcn UI, React Query, 
 
 1. Clone the repository.
 2. Install the dependencies using `pnpm install`.
+3. Create a `.env` file and fill it with the content below:
+```
+VITE_API_BASE_URL=https://api-staging.valyuu.tech/partner
+VITE_API_AUTH_KEY=secret
+VITE_CLOUDINARY_NAME=drdngwlot
+```
 
 ## Development
 
