@@ -23,6 +23,3 @@ dist-ssr
 
 # Dotenv
 .env
-
-# Swagger schema
-swagger.json
