@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { CategoryPageContent, Error, Loading } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE } from '~/constants'
-import { useGetCategories } from '~/queries'
+import { useGetBrands, useGetCategories, useGetModels } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
 import { resetStore } from '~/utils'
 
@@ -37,6 +37,22 @@ export const CategoriesPage: FC = () => {
     if (categoryId !== selectedCategoryId) {
       resetStore(NavigationDestination.Categories)
       // Eliminate the forward navigation history
+    }
+    // Cache the brands or models results if the categoryId is selected
+    if (NAVIGATION_BRANDS_PAGE_ENABLED) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useGetBrands({
+        enabled: !!selectedCategoryId,
+        categoryId: selectedCategoryId!,
+        lang: QUERY_LANGUAGE,
+      })
+    } else {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useGetModels({
+        lang: QUERY_LANGUAGE,
+        categoryId: selectedCategoryId!,
+        enabled: !!selectedCategoryId,
+      })
     }
   }
 

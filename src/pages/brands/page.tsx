@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { BrandPageContent, Error, Loading } from '~/components'
 import { NavigationDestination, QUERY_LANGUAGE } from '~/constants'
-import { useGetBrands } from '~/queries'
+import { useGetBrands, useGetModels } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
 import { resetStore } from '~/utils'
 
@@ -65,6 +65,15 @@ export const BrandsPage: FC = () => {
     if (brandId !== selectedBrandId) {
       resetStore(NavigationDestination.Brands)
     }
+
+    // Cache the models results if the brandId is selected
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetModels({
+      lang: QUERY_LANGUAGE,
+      categoryId: categoryId!,
+      brandId: selectedBrandId,
+      enabled: !!selectedBrandId && !!categoryId,
+    })
   }
 
   return <BrandPageContent data={data?.data} currentValue={brandId} onSelect={handleBrandSelect} />

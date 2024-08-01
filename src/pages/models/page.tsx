@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { Error, Loading, ModelPageContent } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE } from '~/constants'
-import { useGetModels } from '~/queries'
+import { useGetConditionQuestions, useGetGeneralQuestions, useGetModels, useGetProblemQuestions } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
 import { resetStore } from '~/utils'
 
@@ -63,6 +63,28 @@ export const ModelsPage: FC = () => {
       resetStore(NavigationDestination.Models)
       // Eliminate the forward navigation history
     }
+
+    // Cache the general questions results if the modelId is selected
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetGeneralQuestions({
+      lang: QUERY_LANGUAGE,
+      modelId: selectedModelId!,
+      enabled: !!selectedModelId,
+    })
+    // Cache the condition questions results if the modelId is selected
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetConditionQuestions({
+      lang: QUERY_LANGUAGE,
+      modelId: selectedModelId!,
+      enabled: !!selectedModelId,
+    })
+    // Cache the problem questions results if the modelId is selected
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetProblemQuestions({
+      lang: QUERY_LANGUAGE,
+      modelId: selectedModelId!,
+      enabled: !!selectedModelId,
+    })
   }
 
   const { data, isLoading, isError } = useGetModels({
