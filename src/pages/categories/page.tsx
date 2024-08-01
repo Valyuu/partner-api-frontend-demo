@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
@@ -31,29 +31,33 @@ export const CategoriesPage: FC = () => {
     })
   }, [categoryId])
 
+  const [prefetchQueries, setPrefetchQueries] = useState(false)
+  // Cache the brands or models results if the categoryId is selected
+  if (NAVIGATION_BRANDS_PAGE_ENABLED) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetBrands({
+      lang: QUERY_LANGUAGE,
+      categoryId: categoryId!,
+      enabled: !!categoryId && prefetchQueries,
+    })
+  } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGetModels({
+      lang: QUERY_LANGUAGE,
+      categoryId: categoryId!,
+      enabled: !!categoryId && prefetchQueries,
+    })
+  }
+
   const handleCategorySelect = (selectedCategoryId?: string) => {
     productSelectionState.categoryId = selectedCategoryId
     // If the categoryId is not the same as the selectedCategoryId, reset the brandId and modelId
     if (categoryId !== selectedCategoryId) {
       resetStore(NavigationDestination.Categories)
       // Eliminate the forward navigation history
+      navigate('.', { replace: true })
     }
-    // Cache the brands or models results if the categoryId is selected
-    if (NAVIGATION_BRANDS_PAGE_ENABLED) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useGetBrands({
-        enabled: !!selectedCategoryId,
-        categoryId: selectedCategoryId!,
-        lang: QUERY_LANGUAGE,
-      })
-    } else {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useGetModels({
-        lang: QUERY_LANGUAGE,
-        categoryId: selectedCategoryId!,
-        enabled: !!selectedCategoryId,
-      })
-    }
+    setPrefetchQueries(true)
   }
 
   const { data, isLoading, isError } = useGetCategories({ lang: QUERY_LANGUAGE })

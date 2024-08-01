@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
@@ -23,6 +23,15 @@ export const BrandsPage: FC = () => {
     }
   }, [])
 
+  const [prefetchQueries, setPrefetchQueries] = useState(false)
+  // Cache the models results if the brandId is selected
+  useGetModels({
+    lang: QUERY_LANGUAGE,
+    categoryId: categoryId!,
+    brandId: brandId,
+    enabled: !!brandId && !!categoryId && prefetchQueries,
+  })
+
   useLayoutEffect(() => {
     // Set step buttons state
     Object.assign(stepButtonsState, {
@@ -46,9 +55,9 @@ export const BrandsPage: FC = () => {
   }, [brandId])
 
   const { data, isLoading, isError } = useGetBrands({
-    enabled: !!categoryId,
-    categoryId: categoryId!,
     lang: QUERY_LANGUAGE,
+    categoryId: categoryId!,
+    enabled: !!categoryId,
   })
 
   if (isLoading) {
@@ -64,16 +73,10 @@ export const BrandsPage: FC = () => {
     // If the brandId is not the same as the selectedBrandId, reset the modelId
     if (brandId !== selectedBrandId) {
       resetStore(NavigationDestination.Brands)
+      // Eliminate the forward navigation history
+      navigate('.', { replace: true })
     }
-
-    // Cache the models results if the brandId is selected
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetModels({
-      lang: QUERY_LANGUAGE,
-      categoryId: categoryId!,
-      brandId: selectedBrandId,
-      enabled: !!selectedBrandId && !!categoryId,
-    })
+    setPrefetchQueries(true)
   }
 
   return <BrandPageContent data={data?.data} currentValue={brandId} onSelect={handleBrandSelect} />

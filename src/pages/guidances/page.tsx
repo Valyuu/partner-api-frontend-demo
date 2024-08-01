@@ -136,6 +136,7 @@ export const ModelGuidancesPage: FC = () => {
       if (value === GuidanceQuestionOptions.No) {
         resetStore(NavigationDestination.Guidances)
         // Eliminate the forward navigation history
+        navigate('.', { replace: true })
       }
     }
     questionResultsState[QuestionSection.Guidance][sectionIndex] = value

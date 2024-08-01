@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from 'react'
+import { FC, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSnapshot } from 'valtio'
 
@@ -56,35 +56,35 @@ export const ModelsPage: FC = () => {
     })
   }, [modelId])
 
+  const [prefetchQueries, setPrefetchQueries] = useState(false)
+  // Cache the general questions results if the modelId is selected
+  useGetGeneralQuestions({
+    lang: QUERY_LANGUAGE,
+    modelId: modelId!,
+    enabled: !!modelId && prefetchQueries,
+  })
+  // Cache the condition questions results if the modelId is selected
+  useGetConditionQuestions({
+    lang: QUERY_LANGUAGE,
+    modelId: modelId!,
+    enabled: !!modelId && prefetchQueries,
+  })
+  // Cache the problem questions results if the modelId is selected
+  useGetProblemQuestions({
+    lang: QUERY_LANGUAGE,
+    modelId: modelId!,
+    enabled: !!modelId && prefetchQueries,
+  })
+
   const handleModelSelect = (selectedModelId: string) => {
     productSelectionState.modelId = selectedModelId
     if (selectedModelId !== modelId) {
       // If the modelId is not the same as the selectedModelId, reset the question results
       resetStore(NavigationDestination.Models)
       // Eliminate the forward navigation history
+      navigate('.', { replace: true })
     }
-
-    // Cache the general questions results if the modelId is selected
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetGeneralQuestions({
-      lang: QUERY_LANGUAGE,
-      modelId: selectedModelId!,
-      enabled: !!selectedModelId,
-    })
-    // Cache the condition questions results if the modelId is selected
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetConditionQuestions({
-      lang: QUERY_LANGUAGE,
-      modelId: selectedModelId!,
-      enabled: !!selectedModelId,
-    })
-    // Cache the problem questions results if the modelId is selected
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetProblemQuestions({
-      lang: QUERY_LANGUAGE,
-      modelId: selectedModelId!,
-      enabled: !!selectedModelId,
-    })
+    setPrefetchQueries(true)
   }
 
   const { data, isLoading, isError } = useGetModels({

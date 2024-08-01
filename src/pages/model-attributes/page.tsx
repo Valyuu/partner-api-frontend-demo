@@ -129,6 +129,7 @@ export const ModelAttributesPage: FC = () => {
     if (attributeId === selectedAttribute.attributeId && optionId !== selectedAttribute.optionId) {
       resetStore(NavigationDestination.ModelAttributes)
       // Eliminate the forward navigation history
+      navigate('.', { replace: true })
     }
 
     questionResultsState[QuestionSection.Attribute][sectionIndex] = selectedAttribute
