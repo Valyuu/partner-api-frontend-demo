@@ -19,7 +19,7 @@ import {
   questionSectionState,
   stepButtonsState,
 } from '~/stores'
-import { resetStore } from '~/utils'
+import { getFilteredAttributeData, resetStore } from '~/utils'
 
 export const ModelAttributesPage: FC = () => {
   const location = useLocation()
@@ -151,31 +151,17 @@ export const ModelAttributesPage: FC = () => {
     setTimeout(() => goToNextPage(true))
     return null
   }
+
   const attributeQuestions = data?.data?.attributeQuestions
   if (!attributeCombinations || !attributeQuestions) {
     return null
   }
-  const selectedAttributesWithoutCurrent = attributeResults.filter((_, index) => index !== sectionIndex)
-  const currentQuestion = attributeQuestions[sectionIndex]
-  const questionData = {
-    ...currentQuestion,
-    options: currentQuestion.options.filter((option) => {
-      const selectedAttributesWithCurrentOption = [
-        ...selectedAttributesWithoutCurrent,
-        { attributeId: currentQuestion.id, optionId: option.id },
-      ]
-      // Has at least one combination, which means variableId is available
-      return attributeCombinations.some((combination) => {
-        // Every selectedAttribute should be in the combination
-        return selectedAttributesWithCurrentOption.every((selectedAttribute) => {
-          return combination.choices.some(
-            (choice) =>
-              choice.attributeId === selectedAttribute.attributeId && choice.optionId === selectedAttribute.optionId
-          )
-        })
-      })
-    }),
-  }
+  const questionData = getFilteredAttributeData({
+    attributeQuestions,
+    sectionIndex,
+    attributeResults,
+    attributeCombinations,
+  })
 
   return (
     <ModelAttributePageContent data={questionData} currentValue={currentValue} onSelect={handleModelAttributeSelect} />
