@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { Checkbox, Label } from '~/components'
 import { QuestionComponentProps } from '~/interfaces'
 
-export interface ProblemQuestionProps
-  extends QuestionComponentProps<Components.Schemas.V1GetQuestionsItemProblemQuestionsItemOutput[], string[]> {}
+export type ProblemQuestionProps = QuestionComponentProps<
+  Components.Schemas.V1GetQuestionsItemProblemQuestionsItemOutput[],
+  string[]
+>
 
 export const ProblemPageContent = ({ data, currentValue, onSelect }: ProblemQuestionProps) => {
   const [selectedProblems, setSelectedProblems] = useState(currentValue || [])

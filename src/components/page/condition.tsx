@@ -3,11 +3,10 @@ import { QuestionSection } from '~/constants'
 import { QuestionComponentProps, QuestionResultsStateType } from '~/interfaces'
 import { cn } from '~/utils'
 
-export interface ConditionQuestionProps
-  extends QuestionComponentProps<
-    Components.Schemas.V1GetQuestionsItemConditionQuestionsItemOutput,
-    QuestionResultsStateType[QuestionSection.Condition][number]
-  > {}
+export type ConditionQuestionProps = QuestionComponentProps<
+  Components.Schemas.V1GetQuestionsItemConditionQuestionsItemOutput,
+  QuestionResultsStateType[QuestionSection.Condition][number]
+>
 
 export const ConditionPageContent = ({ data, currentValue, onSelect }: ConditionQuestionProps) => {
   if (!data) {

@@ -22,7 +22,7 @@ Command.displayName = CommandPrimitive.displayName
 
 const CommandLoading = CommandPrimitive.Loading
 
-interface CommandDialogProps extends DialogProps {}
+type CommandDialogProps = DialogProps
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (

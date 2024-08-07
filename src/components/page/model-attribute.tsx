@@ -3,11 +3,10 @@ import { QuestionSection } from '~/constants'
 import { QuestionComponentProps, QuestionResultsStateType } from '~/interfaces'
 import { cn } from '~/utils'
 
-export interface ModelAttributeQuestionProps
-  extends QuestionComponentProps<
-    Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput,
-    QuestionResultsStateType[QuestionSection.Attribute][number]
-  > {}
+export type ModelAttributeQuestionProps = QuestionComponentProps<
+  Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput,
+  QuestionResultsStateType[QuestionSection.Attribute][number]
+>
 
 export const ModelAttributePageContent = ({ data, currentValue, onSelect }: ModelAttributeQuestionProps) => {
   if (!data) {

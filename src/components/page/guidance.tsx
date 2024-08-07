@@ -5,11 +5,10 @@ import { GuidanceQuestionOptions } from '~/constants'
 import { QuestionComponentProps } from '~/interfaces'
 import { cn } from '~/utils'
 
-export interface ModelAttributesQuestionProps
-  extends QuestionComponentProps<
-    Components.Schemas.V1GetQuestionsItemGuidanceQuestionsItemOutput,
-    GuidanceQuestionOptions
-  > {}
+export type ModelAttributesQuestionProps = QuestionComponentProps<
+  Components.Schemas.V1GetQuestionsItemGuidanceQuestionsItemOutput,
+  GuidanceQuestionOptions
+>
 
 export const GuidancePageContent = ({ data, currentValue, onSelect }: ModelAttributesQuestionProps) => {
   if (!data) {

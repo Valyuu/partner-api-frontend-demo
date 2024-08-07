@@ -1,8 +1,7 @@
 import { QuestionComponentProps } from '~/interfaces'
 import { cn } from '~/utils'
 
-export interface CategoryQuestionProps
-  extends QuestionComponentProps<Components.Schemas.V1GetCategoriesItemOutput[], string> {}
+export type CategoryQuestionProps = QuestionComponentProps<Components.Schemas.V1GetCategoriesItemOutput[], string>
 
 export const CategoryPageContent = ({ data, currentValue: categoryId, onSelect }: CategoryQuestionProps) => {
   if (!data) {
