@@ -6,15 +6,11 @@ export const getFilteredAttributeData = ({
 }: {
   attributeQuestions: Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput[]
   sectionIndex: number
-  attributeResults:
-    | {
-        attributeId: string
-        optionId: string
-      }[]
-    | readonly {
-        readonly attributeId: string
-        readonly optionId: string
-      }[]
+  attributeResults: {
+    attributeId: string
+    optionId: string
+  }[]
+
   attributeCombinations: Components.Schemas.V1GetQuestionsItemAttributeCombinationsItemOutput[]
 }) => {
   const selectedAttributesWithoutCurrent = attributeResults.filter((_, index) => index !== sectionIndex)

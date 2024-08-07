@@ -159,7 +159,7 @@ export const ModelAttributesPage: FC = () => {
   const questionData = getFilteredAttributeData({
     attributeQuestions,
     sectionIndex,
-    attributeResults,
+    attributeResults: attributeResults as { attributeId: string; optionId: string }[],
     attributeCombinations,
   })
 
