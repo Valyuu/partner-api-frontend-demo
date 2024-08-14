@@ -22,7 +22,6 @@ export default tseslint.config(
       },
     },
   },
-  // @ts-expect-error-next-line
   prettierRecommended,
   {
     languageOptions: {
@@ -38,6 +37,7 @@ export default tseslint.config(
       'react-hooks': fixupPluginRules(reactHooks),
     },
     ignores: ['dist/**'],
+    // @ts-expect-error-next-line
     rules: {
       'no-fallthrough': 'warn',
       'simple-import-sort/imports': 'error',
