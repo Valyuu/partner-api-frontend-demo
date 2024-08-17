@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { Error, Loading, ProblemPageContent } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE, QuestionSection } from '~/constants'
-import { useGetProblemQuestions } from '~/queries'
+import { useGetModelQuestions } from '~/queries'
 import {
   productSelectionState,
   progressBarState,
@@ -30,7 +30,7 @@ export const ProblemsPage: FC = () => {
 
   const currentValue = problemResults as string[]
 
-  const { data, isLoading, isError } = useGetProblemQuestions({
+  const { data, isLoading, isError } = useGetModelQuestions({
     lang: QUERY_LANGUAGE,
     modelId: modelId!,
     enabled: !!modelId,
@@ -100,5 +100,11 @@ export const ProblemsPage: FC = () => {
     questionResultsState[QuestionSection.Problem] = problems
   }
 
-  return <ProblemPageContent data={data?.data} currentValue={currentValue} onSelect={handleProblemSelect} />
+  return (
+    <ProblemPageContent
+      data={data?.data?.problemQuestions}
+      currentValue={currentValue}
+      onSelect={handleProblemSelect}
+    />
+  )
 }

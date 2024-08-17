@@ -4,14 +4,14 @@ export const getFilteredAttributeData = ({
   attributeResults,
   attributeCombinations,
 }: {
-  attributeQuestions: Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput[]
+  attributeQuestions: Components.Schemas.V1GetModelQuestionsAttributeQuestionsItemOutput[]
   sectionIndex: number
   attributeResults: {
     attributeId: string
     optionId: string
   }[]
 
-  attributeCombinations: Components.Schemas.V1GetQuestionsItemAttributeCombinationsItemOutput[]
+  attributeCombinations: Components.Schemas.V1GetModelQuestionsAttributeCombinationsItemOutput[]
 }) => {
   const selectedAttributesWithoutCurrent = attributeResults.filter((_, index) => index !== sectionIndex)
   const currentQuestion = attributeQuestions[sectionIndex]

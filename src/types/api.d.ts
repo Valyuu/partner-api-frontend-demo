@@ -1,6 +1,10 @@
 declare namespace Components {
   namespace Schemas {
     /**
+     * Faq collection
+     */
+    export type FaqCollectionType = 'SELLER_PLAN' | 'SELLER_MAIN' | 'BUYER_MAIN'
+    /**
      * The time unit for the payment time
      */
     export type PaymentTimeUnit = 'HOURS' | 'DAYS'
@@ -183,7 +187,7 @@ declare namespace Components {
       /**
        * Category ID to filter brands
        */
-      categoryId: string
+      categoryId?: string
     }
     export interface V1GetBrandsItemOutput {
       /**
@@ -220,7 +224,160 @@ declare namespace Components {
        */
       image: string
     }
-    export interface V1GetGeneralQuestionsOutput {
+    export interface V1GetFaqsInput {
+      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      collection: /* Faq collection */ FaqCollectionType
+    }
+    export interface V1GetFaqsItemOutput {
+      /**
+       * Unique identifier for the FAQ
+       */
+      id: string // uuid
+      /**
+       * Faq question
+       */
+      question: string
+      /**
+       * Answer of the FAQ question
+       */
+      answer: string
+    }
+    export interface V1GetModelQuestionsAttributeCombinationsChoicesItemOutput {
+      /**
+       * Unique identifier for the attribute
+       */
+      attributeId: string // uuid
+      /**
+       * Unique identifier for the option
+       */
+      optionId: string // uuid
+    }
+    export interface V1GetModelQuestionsAttributeCombinationsItemOutput {
+      /**
+       * Unique identifier for the combination
+       */
+      id: string // uuid
+      /**
+       * Choices for the attribute combination
+       */
+      choices: V1GetModelQuestionsAttributeCombinationsChoicesItemOutput[]
+    }
+    export interface V1GetModelQuestionsAttributeQuestionsItemOutput {
+      /**
+       * Unique identifier for the attribute question
+       */
+      id: string // uuid
+      /**
+       * Name of the attribute question
+       */
+      name: string
+      /**
+       * Question text
+       */
+      question: string
+      /**
+       * Description of the attribute question
+       */
+      description?: string
+      /**
+       * Options for the attribute question
+       */
+      options: V1GetModelQuestionsAttributeQuestionsOptionItemOutput[]
+    }
+    export interface V1GetModelQuestionsAttributeQuestionsOptionItemOutput {
+      /**
+       * Unique identifier for the option
+       */
+      id: string // uuid
+      /**
+       * Name of the option
+       */
+      name: string
+    }
+    export interface V1GetModelQuestionsConditionQuestionsItemOutput {
+      /**
+       * Unique identifier for the condition question
+       */
+      id: string // uuid
+      /**
+       * Name of the condition question
+       */
+      name: string
+      /**
+       * Question text
+       */
+      question: string
+      /**
+       * Description of the condition question
+       */
+      description?: string
+      /**
+       * Options for the condition question
+       */
+      options: V1GetModelQuestionsConditionQuestionsOptionsItemOutput[]
+    }
+    export interface V1GetModelQuestionsConditionQuestionsOptionsItemOutput {
+      /**
+       * Unique identifier for the option
+       */
+      id: string // uuid
+      /**
+       * Name of the option
+       */
+      name: string
+      /**
+       * Description of the option
+       */
+      description: string
+      /**
+       * Percentage of users who chose this option
+       */
+      percentOfChoice?: number
+    }
+    export interface V1GetModelQuestionsGuidanceQuestionsImageTextItemOutput {
+      /**
+       * Unique identifier for the image text
+       */
+      id: string // uuid
+      /**
+       * Name of the image text
+       */
+      name: string
+      /**
+       * URL of the image
+       */
+      image: string
+    }
+    export interface V1GetModelQuestionsGuidanceQuestionsItemOutput {
+      /**
+       * Unique identifier for the guidance
+       */
+      id: string // uuid
+      /**
+       * Unique identifier for the guidance question
+       */
+      name: string // uuid
+      /**
+       * Question text
+       */
+      question: string
+      /**
+       * Description of the guidance question
+       */
+      description?: string
+      /**
+       * Image texts for the guidance question
+       */
+      imageTexts: V1GetModelQuestionsGuidanceQuestionsImageTextItemOutput[]
+    }
+    export interface V1GetModelQuestionsInput {
+      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Model ID to filter questions
+       */
+      modelId: string
+    }
+    export interface V1GetModelQuestionsOutput {
       /**
        * Name of the model
        */
@@ -236,15 +393,33 @@ declare namespace Components {
       /**
        * Attribute questions for the model
        */
-      attributeQuestions: V1GetQuestionsItemAttributeQuestionsItemOutput[]
+      attributeQuestions: V1GetModelQuestionsAttributeQuestionsItemOutput[]
       /**
        * Attribute combinations for the model
        */
-      attributeCombinations: V1GetQuestionsItemAttributeCombinationsItemOutput[]
+      attributeCombinations: V1GetModelQuestionsAttributeCombinationsItemOutput[]
       /**
        * Guidance questions for the model
        */
-      guidanceQuestions: V1GetQuestionsItemGuidanceQuestionsItemOutput[]
+      guidanceQuestions: V1GetModelQuestionsGuidanceQuestionsItemOutput[]
+      /**
+       * Condition questions for the model
+       */
+      conditionQuestions: V1GetModelQuestionsConditionQuestionsItemOutput[]
+      /**
+       * Problem questions for the model
+       */
+      problemQuestions: V1GetModelQuestionsProblemQuestionsItemOutput[]
+    }
+    export interface V1GetModelQuestionsProblemQuestionsItemOutput {
+      /**
+       * Unique identifier for the problem question
+       */
+      id: string // uuid
+      /**
+       * Name of the problem question
+       */
+      name: string
     }
     export interface V1GetModelsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
@@ -275,140 +450,24 @@ declare namespace Components {
        */
       image: string
     }
-    export interface V1GetQuestionsInput {
+    export interface V1GetSeriesInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
-       * Model ID to filter questions
+       * Category ID to filter series
        */
-      modelId: string
+      categoryId?: string
+      /**
+       * Brand ID to filter series
+       */
+      brandId?: string
     }
-    export interface V1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput {
+    export interface V1GetSeriesItemOutput {
       /**
-       * Unique identifier for the attribute
-       */
-      attributeId: string // uuid
-      /**
-       * Unique identifier for the option
-       */
-      optionId: string // uuid
-    }
-    export interface V1GetQuestionsItemAttributeCombinationsItemOutput {
-      /**
-       * Unique identifier for the combination
+       * Unique identifier for the brand
        */
       id: string // uuid
       /**
-       * Choices for the attribute combination
-       */
-      choices: V1GetQuestionsItemAttributeCombinationsItemChoicesItemOutput[]
-    }
-    export interface V1GetQuestionsItemAttributeQuestionsItemOptionItemOutput {
-      /**
-       * Unique identifier for the option
-       */
-      id: string // uuid
-      /**
-       * Name of the option
-       */
-      name: string
-    }
-    export interface V1GetQuestionsItemAttributeQuestionsItemOutput {
-      /**
-       * Unique identifier for the attribute question
-       */
-      id: string // uuid
-      /**
-       * Name of the attribute question
-       */
-      name: string
-      /**
-       * Question text
-       */
-      question: string
-      /**
-       * Description of the attribute question
-       */
-      description?: string
-      /**
-       * Options for the attribute question
-       */
-      options: V1GetQuestionsItemAttributeQuestionsItemOptionItemOutput[]
-    }
-    export interface V1GetQuestionsItemConditionQuestionsItemOptionsItemOutput {
-      /**
-       * Unique identifier for the option
-       */
-      id: string // uuid
-      /**
-       * Name of the option
-       */
-      name: string
-      /**
-       * Description of the option
-       */
-      description: string
-    }
-    export interface V1GetQuestionsItemConditionQuestionsItemOutput {
-      /**
-       * Unique identifier for the condition question
-       */
-      id: string // uuid
-      /**
-       * Name of the condition question
-       */
-      name: string
-      /**
-       * Question text
-       */
-      question: string
-      /**
-       * Description of the condition question
-       */
-      description?: string
-      /**
-       * Options for the condition question
-       */
-      options: V1GetQuestionsItemConditionQuestionsItemOptionsItemOutput[]
-    }
-    export interface V1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput {
-      /**
-       * Unique identifier for the image text
-       */
-      id: string // uuid
-      /**
-       * Name of the image text
-       */
-      name: string
-      /**
-       * URL of the image
-       */
-      image: string
-    }
-    export interface V1GetQuestionsItemGuidanceQuestionsItemOutput {
-      /**
-       * Unique identifier for the guidance question
-       */
-      name: string // uuid
-      /**
-       * Question text
-       */
-      question: string
-      /**
-       * Description of the guidance question
-       */
-      description?: string
-      /**
-       * Image texts for the guidance question
-       */
-      imageTexts: V1GetQuestionsItemGuidanceQuestionsItemImageTextItemOutput[]
-    }
-    export interface V1GetQuestionsItemProblemQuestionsItemOutput {
-      /**
-       * Unique identifier for the problem question
-       */
-      id: string // uuid
-      /**
-       * Name of the problem question
+       * Name of the brand
        */
       name: string
     }
@@ -573,7 +632,7 @@ declare namespace Components {
        */
       data: V1GetCategoriesItemOutput[]
     }
-    export interface V1WrappedGetConditionQuestionsOutput {
+    export interface V1WrappedGetFaqsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -587,11 +646,11 @@ declare namespace Components {
        */
       statusCode: number
       /**
-       * Condition questions for the model
+       * Faq list
        */
-      data: V1GetQuestionsItemConditionQuestionsItemOutput[]
+      data: V1GetFaqsItemOutput[]
     }
-    export interface V1WrappedGetGeneralQuestionsOutput {
+    export interface V1WrappedGetModelQuestionsOutput {
       /**
        * Indicates the success of the operation
        */
@@ -623,15 +682,23 @@ declare namespace Components {
         /**
          * Attribute questions for the model
          */
-        attributeQuestions: V1GetQuestionsItemAttributeQuestionsItemOutput[]
+        attributeQuestions: V1GetModelQuestionsAttributeQuestionsItemOutput[]
         /**
          * Attribute combinations for the model
          */
-        attributeCombinations: V1GetQuestionsItemAttributeCombinationsItemOutput[]
+        attributeCombinations: V1GetModelQuestionsAttributeCombinationsItemOutput[]
         /**
          * Guidance questions for the model
          */
-        guidanceQuestions: V1GetQuestionsItemGuidanceQuestionsItemOutput[]
+        guidanceQuestions: V1GetModelQuestionsGuidanceQuestionsItemOutput[]
+        /**
+         * Condition questions for the model
+         */
+        conditionQuestions: V1GetModelQuestionsConditionQuestionsItemOutput[]
+        /**
+         * Problem questions for the model
+         */
+        problemQuestions: V1GetModelQuestionsProblemQuestionsItemOutput[]
       }
     }
     export interface V1WrappedGetModelsOutput {
@@ -652,7 +719,7 @@ declare namespace Components {
        */
       data: V1GetModelsItemOutput[]
     }
-    export interface V1WrappedGetProblemQuestionsOutput {
+    export interface V1WrappedGetSeriesOutput {
       /**
        * Indicates the success of the operation
        */
@@ -666,9 +733,9 @@ declare namespace Components {
        */
       statusCode: number
       /**
-       * Problem questions for the model
+       * Brand list
        */
-      data: V1GetQuestionsItemProblemQuestionsItemOutput[]
+      data: V1GetSeriesItemOutput[]
     }
     export interface V1WrappedGetTradeInItemDataOutput {
       /**
@@ -754,7 +821,7 @@ declare namespace Paths {
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
-      categoryId: Parameters.CategoryId
+      categoryId?: Parameters.CategoryId
     }
     namespace Responses {
       export type $200 = Components.Schemas.V1WrappedGetBrandsOutput
@@ -771,17 +838,17 @@ declare namespace Paths {
       export type $200 = Components.Schemas.V1WrappedGetCategoriesOutput
     }
   }
-  namespace V1ControllerGetConditionQuestions {
+  namespace V1ControllerGetFaqs {
     namespace Parameters {
+      export type Collection = /* Faq collection */ Components.Schemas.FaqCollectionType
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
-      export type ModelId = string
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
-      modelId: Parameters.ModelId
+      collection: Parameters.Collection
     }
     namespace Responses {
-      export type $200 = Components.Schemas.V1WrappedGetConditionQuestionsOutput
+      export type $200 = Components.Schemas.V1WrappedGetFaqsOutput
     }
   }
   namespace V1ControllerGetModelQuestions {
@@ -794,7 +861,7 @@ declare namespace Paths {
       modelId: Parameters.ModelId
     }
     namespace Responses {
-      export type $200 = Components.Schemas.V1WrappedGetGeneralQuestionsOutput
+      export type $200 = Components.Schemas.V1WrappedGetModelQuestionsOutput
     }
   }
   namespace V1ControllerGetModels {
@@ -814,17 +881,19 @@ declare namespace Paths {
       export type $200 = Components.Schemas.V1WrappedGetModelsOutput
     }
   }
-  namespace V1ControllerGetProblemQuestions {
+  namespace V1ControllerGetSeries {
     namespace Parameters {
+      export type BrandId = string
+      export type CategoryId = string
       export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
-      export type ModelId = string
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
-      modelId: Parameters.ModelId
+      categoryId?: Parameters.CategoryId
+      brandId?: Parameters.BrandId
     }
     namespace Responses {
-      export type $200 = Components.Schemas.V1WrappedGetProblemQuestionsOutput
+      export type $200 = Components.Schemas.V1WrappedGetSeriesOutput
     }
   }
   namespace V1ControllerGetShippingLabel {

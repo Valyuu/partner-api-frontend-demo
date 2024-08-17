@@ -11,7 +11,7 @@ import {
   QuestionSection,
 } from '~/constants'
 import { QuestionResultsStateType } from '~/interfaces'
-import { useGetGeneralQuestions } from '~/queries'
+import { useGetModelQuestions } from '~/queries'
 import {
   productSelectionState,
   progressBarState,
@@ -36,7 +36,7 @@ export const ModelAttributesPage: FC = () => {
   const currentValue = attributeResults[sectionIndex]
   const { attributeId, optionId } = currentValue ?? {}
 
-  const { data, isLoading, isError } = useGetGeneralQuestions({
+  const { data, isLoading, isError } = useGetModelQuestions({
     lang: QUERY_LANGUAGE,
     modelId: modelId!,
     enabled: !!modelId,

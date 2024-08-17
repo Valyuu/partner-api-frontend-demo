@@ -4,7 +4,7 @@ import { useSnapshot } from 'valtio'
 
 import { Error, Loading, ModelPageContent } from '~/components'
 import { NAVIGATION_BRANDS_PAGE_ENABLED, NavigationDestination, QUERY_LANGUAGE } from '~/constants'
-import { useGetConditionQuestions, useGetGeneralQuestions, useGetModels, useGetProblemQuestions } from '~/queries'
+import { useGetModelQuestions, useGetModels } from '~/queries'
 import { productSelectionState, progressBarState, stepButtonsState } from '~/stores'
 import { resetStore } from '~/utils'
 
@@ -57,20 +57,8 @@ export const ModelsPage: FC = () => {
   }, [modelId])
 
   const [prefetchQueries, setPrefetchQueries] = useState(false)
-  // Cache the general questions results if the modelId is selected
-  useGetGeneralQuestions({
-    lang: QUERY_LANGUAGE,
-    modelId: modelId!,
-    enabled: !!modelId && prefetchQueries,
-  })
-  // Cache the condition questions results if the modelId is selected
-  useGetConditionQuestions({
-    lang: QUERY_LANGUAGE,
-    modelId: modelId!,
-    enabled: !!modelId && prefetchQueries,
-  })
-  // Cache the problem questions results if the modelId is selected
-  useGetProblemQuestions({
+  // Cache the model questions results if the modelId is selected
+  useGetModelQuestions({
     lang: QUERY_LANGUAGE,
     modelId: modelId!,
     enabled: !!modelId && prefetchQueries,

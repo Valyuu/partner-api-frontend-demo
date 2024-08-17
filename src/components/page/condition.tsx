@@ -4,7 +4,7 @@ import { QuestionComponentProps, QuestionResultsStateType } from '~/interfaces'
 import { cn } from '~/utils'
 
 export type ConditionQuestionProps = QuestionComponentProps<
-  Components.Schemas.V1GetQuestionsItemConditionQuestionsItemOutput,
+  Components.Schemas.V1GetModelQuestionsConditionQuestionsItemOutput,
   QuestionResultsStateType[QuestionSection.Condition][number]
 >
 

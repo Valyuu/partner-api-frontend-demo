@@ -4,7 +4,7 @@ import { QuestionComponentProps, QuestionResultsStateType } from '~/interfaces'
 import { cn } from '~/utils'
 
 export type ModelAttributeQuestionProps = QuestionComponentProps<
-  Components.Schemas.V1GetQuestionsItemAttributeQuestionsItemOutput,
+  Components.Schemas.V1GetModelQuestionsAttributeQuestionsItemOutput,
   QuestionResultsStateType[QuestionSection.Attribute][number]
 >
 

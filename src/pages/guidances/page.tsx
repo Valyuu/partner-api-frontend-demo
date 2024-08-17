@@ -11,7 +11,7 @@ import {
   QUERY_LANGUAGE,
   QuestionSection,
 } from '~/constants'
-import { useGetGeneralQuestions } from '~/queries'
+import { useGetModelQuestions } from '~/queries'
 import {
   productSelectionState,
   progressBarState,
@@ -37,7 +37,7 @@ export const ModelGuidancesPage: FC = () => {
   const guidanceResults = useSnapshot(questionResultsState[QuestionSection.Guidance])
   const currentValue = guidanceResults[sectionIndex]
 
-  const { data, isLoading, isError } = useGetGeneralQuestions({
+  const { data, isLoading, isError } = useGetModelQuestions({
     lang: QUERY_LANGUAGE,
     modelId: modelId!,
     enabled: !!modelId,

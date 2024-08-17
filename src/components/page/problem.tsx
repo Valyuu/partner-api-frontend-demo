@@ -4,7 +4,7 @@ import { Checkbox, Label } from '~/components'
 import { QuestionComponentProps } from '~/interfaces'
 
 export type ProblemQuestionProps = QuestionComponentProps<
-  Components.Schemas.V1GetQuestionsItemProblemQuestionsItemOutput[],
+  Components.Schemas.V1GetModelQuestionsProblemQuestionsItemOutput[],
   string[]
 >
 

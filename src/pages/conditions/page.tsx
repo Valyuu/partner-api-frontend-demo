@@ -11,7 +11,7 @@ import {
   QuestionSection,
 } from '~/constants'
 import { QuestionResultsStateType } from '~/interfaces'
-import { useGetConditionQuestions } from '~/queries'
+import { useGetModelQuestions } from '~/queries'
 import {
   productSelectionState,
   progressBarState,
@@ -37,13 +37,13 @@ export const ModelConditionsPage: FC = () => {
   const currentValue = conditionResults[sectionIndex]
   const { conditionId, optionId } = currentValue ?? {}
 
-  const { data, isLoading, isError } = useGetConditionQuestions({
+  const { data, isLoading, isError } = useGetModelQuestions({
     lang: QUERY_LANGUAGE,
     modelId: modelId!,
     enabled: !!modelId,
   })
 
-  const conditionCount = data?.data?.length ?? questionSectionState.questionCount.condition
+  const conditionCount = data?.data?.conditionQuestions?.length ?? questionSectionState.questionCount.condition
 
   const goToPreviousPage = () => {
     if (window.history.length > 1) {
@@ -93,7 +93,7 @@ export const ModelConditionsPage: FC = () => {
 
   useEffect(() => {
     if (data?.data) {
-      questionSectionState.questionCount.condition = data.data.length
+      questionSectionState.questionCount.condition = data.data?.conditionQuestions.length
     }
   }, [data])
 
@@ -138,7 +138,7 @@ export const ModelConditionsPage: FC = () => {
 
   return (
     <ConditionPageContent
-      data={data?.data?.[sectionIndex]}
+      data={data?.data?.conditionQuestions?.[sectionIndex]}
       currentValue={currentValue}
       onSelect={handleConditionSelect}
     />

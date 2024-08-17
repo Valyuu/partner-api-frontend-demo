@@ -42,6 +42,7 @@ export default tseslint.config(
       'no-fallthrough': 'warn',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      '@typescript-eslint/no-empty-object-type': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       ...reactHooks.configs.recommended.rules,
     },

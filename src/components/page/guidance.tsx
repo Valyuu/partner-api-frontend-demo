@@ -6,7 +6,7 @@ import { QuestionComponentProps } from '~/interfaces'
 import { cn } from '~/utils'
 
 export type ModelAttributesQuestionProps = QuestionComponentProps<
-  Components.Schemas.V1GetQuestionsItemGuidanceQuestionsItemOutput,
+  Components.Schemas.V1GetModelQuestionsGuidanceQuestionsItemOutput,
   GuidanceQuestionOptions
 >
 
