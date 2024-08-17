@@ -19,7 +19,9 @@ export const useGetBrands = ({
     queryKey: ['brands', { categoryId, lang }],
     queryFn: async () => {
       const url = new URL(`${baseUrl}/v1/brands`)
-      url.searchParams.append('categoryId', categoryId)
+      if (categoryId) {
+        url.searchParams.append('categoryId', categoryId)
+      }
       if (lang) {
         url.searchParams.append('lang', lang)
       }
