@@ -1,30 +1,34 @@
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { ButtonHTMLAttributes, forwardRef } from 'react'
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 
 import { cn } from '~/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'group inline-flex max-w-full cursor-pointer items-center justify-center rounded-lg text-lg font-semibold leading-5 outline-none transition duration-100 hover:scale-[1.025] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-[#c9d7df] disabled:text-[#88919e]',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: 'border-primary bg-primary text-primary-foreground',
+        destructive: 'hover:bg-destructive/90 bg-destructive text-destructive-foreground',
+        secondary: 'border-white bg-white !px-2',
+        link: 'text-[#2c72ff] outline-none hover:text-primary hover:underline focus:border-none active:border-none active:shadow-none',
+      },
+      arrow: {
+        none: '',
+        right: 'flex justify-center',
+        left: 'flex justify-center',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
+        default: 'px-7 py-3',
+        sm: 'px-7 py-3 text-base',
         icon: 'size-10',
       },
     },
     defaultVariants: {
       variant: 'default',
+      arrow: 'none',
       size: 'default',
     },
   }
@@ -35,11 +39,36 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, Va
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, arrow, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+
+    return (
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
+        <>
+          {arrow === 'left' && (
+            <BsArrowLeft
+              size={28}
+              className={cn(
+                '-ml-1 mr-2.5 inline-block size-6 leading-5 text-[#009de8] transition duration-150 group-hover:-translate-x-1',
+                { 'text-[#88919e]': props.disabled }
+              )}
+            />
+          )}
+          {children}
+          {arrow === 'right' && (
+            <BsArrowRight
+              size={28}
+              className={cn(
+                '-mr-1 ml-2.5 inline-block size-6 leading-5 text-[#009de8] transition duration-150 group-hover:translate-x-1',
+                { 'text-[#88919e]': props.disabled }
+              )}
+            />
+          )}
+        </>
+      </Comp>
+    )
   }
 )
 Button.displayName = 'Button'
 
-export { Button }
+export { Button, buttonVariants }

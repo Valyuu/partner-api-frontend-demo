@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 
 import { QUERY_CACHE_TIME } from '~/constants'
 
-export const useGetModelQuestions = ({
+export const useModelQuestions = ({
   modelId,
   lang,
   enabled = true,
 }: Components.Schemas.V1GetModelQuestionsInput & { enabled?: boolean }) => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
-  const authKey = import.meta.env.VITE_API_AUTH_KEY
+  const baseUrl = import.meta.env.API_BASE_URL
+  const authKey = import.meta.env.API_AUTH_KEY
 
   return useQuery<
     Components.Schemas.V1WrappedGetModelQuestionsOutput,

@@ -114,6 +114,10 @@ declare namespace Components {
        */
       price: number
       /**
+       * Plan of the item
+       */
+      plan: string
+      /**
        * Indicates if the product is functional
        */
       isProductFunctional: boolean
@@ -334,42 +338,6 @@ declare namespace Components {
        */
       percentOfChoice?: number
     }
-    export interface V1GetModelQuestionsGuidanceQuestionsImageTextItemOutput {
-      /**
-       * Unique identifier for the image text
-       */
-      id: string // uuid
-      /**
-       * Name of the image text
-       */
-      name: string
-      /**
-       * URL of the image
-       */
-      image: string
-    }
-    export interface V1GetModelQuestionsGuidanceQuestionsItemOutput {
-      /**
-       * Unique identifier for the guidance
-       */
-      id: string // uuid
-      /**
-       * Unique identifier for the guidance question
-       */
-      name: string // uuid
-      /**
-       * Question text
-       */
-      question: string
-      /**
-       * Description of the guidance question
-       */
-      description?: string
-      /**
-       * Image texts for the guidance question
-       */
-      imageTexts: V1GetModelQuestionsGuidanceQuestionsImageTextItemOutput[]
-    }
     export interface V1GetModelQuestionsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
@@ -399,10 +367,6 @@ declare namespace Components {
        */
       attributeCombinations: V1GetModelQuestionsAttributeCombinationsItemOutput[]
       /**
-       * Guidance questions for the model
-       */
-      guidanceQuestions: V1GetModelQuestionsGuidanceQuestionsItemOutput[]
-      /**
        * Condition questions for the model
        */
       conditionQuestions: V1GetModelQuestionsConditionQuestionsItemOutput[]
@@ -410,16 +374,38 @@ declare namespace Components {
        * Problem questions for the model
        */
       problemQuestions: V1GetModelQuestionsProblemQuestionsItemOutput[]
-    }
-    export interface V1GetModelQuestionsProblemQuestionsItemOutput {
       /**
-       * Unique identifier for the problem question
+       * Problem image texts for the model
+       */
+      problemImageTexts: V1GetModelQuestionsProblemImageTextsItemOutput[]
+    }
+    export interface V1GetModelQuestionsProblemImageTextsItemOutput {
+      /**
+       * Unique identifier for the problem image text
        */
       id: string // uuid
       /**
-       * Name of the problem question
+       * Name of the problem image text
        */
       name: string
+      /**
+       * Image URL for the problem image text
+       */
+      image: string
+    }
+    export interface V1GetModelQuestionsProblemQuestionsItemOutput {
+      /**
+       * Unique identifier for the problem
+       */
+      id: string // uuid
+      /**
+       * Name of the problem
+       */
+      name: string
+      /**
+       * Description of the problem
+       */
+      description?: string
     }
     export interface V1GetModelsInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
@@ -491,6 +477,16 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
+    export interface V1GetTradeInItemDataEcoSavingsOutput {
+      /**
+       * CO2 savings of the item, in g
+       */
+      savedCo2: number
+      /**
+       * Raw materials savings of the item, in g
+       */
+      savedEwaste: number
+    }
     export interface V1GetTradeInItemDataInput {
       lang?: /* Language code. Defaults to "nl" */ SupportedLangues
       /**
@@ -547,6 +543,29 @@ declare namespace Components {
        * User's answers (for display purposes only)
        */
       answers: string[]
+      /**
+       * All payment plans and prices a user can get, with processing time, currently only C2B is supported. If it's an empty array, then this product is not eligible for trade-in
+       */
+      paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
+      /**
+       * Eco savings of the item
+       */
+      ecoSavings: {
+        /**
+         * CO2 savings of the item, in g
+         */
+        savedCo2: number
+        /**
+         * Raw materials savings of the item, in g
+         */
+        savedEwaste: number
+      }
+    }
+    export interface V1GetTradeInItemDataPaymentPlanItemOutput {
+      /**
+       * Payment plan, now only C2B is
+       */
+      plan: string
       /**
        * Currency of the price (for display purposes only)
        */
@@ -688,10 +707,6 @@ declare namespace Components {
          */
         attributeCombinations: V1GetModelQuestionsAttributeCombinationsItemOutput[]
         /**
-         * Guidance questions for the model
-         */
-        guidanceQuestions: V1GetModelQuestionsGuidanceQuestionsItemOutput[]
-        /**
          * Condition questions for the model
          */
         conditionQuestions: V1GetModelQuestionsConditionQuestionsItemOutput[]
@@ -699,6 +714,10 @@ declare namespace Components {
          * Problem questions for the model
          */
         problemQuestions: V1GetModelQuestionsProblemQuestionsItemOutput[]
+        /**
+         * Problem image texts for the model
+         */
+        problemImageTexts: V1GetModelQuestionsProblemImageTextsItemOutput[]
       }
     }
     export interface V1WrappedGetModelsOutput {
@@ -787,22 +806,22 @@ declare namespace Components {
          */
         answers: string[]
         /**
-         * Currency of the price (for display purposes only)
+         * All payment plans and prices a user can get, with processing time, currently only C2B is supported. If it's an empty array, then this product is not eligible for trade-in
          */
-        currency: string
+        paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
         /**
-         * Trade-in price in pure number format (for both display and as an input for the API call "createTradeIn")
+         * Eco savings of the item
          */
-        price: number
-        /**
-         * The minimum number of time units before payment is made
-         */
-        minPaymentTime: number
-        /**
-         * The maximum number of time units before payment is made
-         */
-        maxPaymentTime: number
-        paymentTimeUnit: /* The time unit for the payment time */ PaymentTimeUnit
+        ecoSavings: {
+          /**
+           * CO2 savings of the item, in g
+           */
+          savedCo2: number
+          /**
+           * Raw materials savings of the item, in g
+           */
+          savedEwaste: number
+        }
       }
     }
   }

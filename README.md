@@ -7,35 +7,36 @@ Technology stack: React, TypeScript, Vite, TailwindCSS, Shadcn UI, React Query, 
 ## Getting Started
 
 1. Clone the repository.
-2. Install the dependencies using `pnpm install`.
+2. Install the dependencies using `npm install`.
 3. Create a `.env` file and fill it with the content below:
 ```
-VITE_API_BASE_URL=https://api-staging.valyuu.tech/partner
-VITE_API_AUTH_KEY=secret
-VITE_CLOUDINARY_NAME=drdngwlot
+API_BASE_URL=https://api.example.com   # Replace with your API base URL
+API_AUTH_KEY=your_auth_key_here        # Replace with your API authentication key
+ALLOWED_CATEGORIES={"smartphone":"smartphone_uuid_here","tablet":"tablet_uuid_here","smartwatch":"smartwatch_uuid_here"}  # Replace with actual UUIDs
 ```
 
 ## Development
 
-To start the development server, run `pnpm dev`. This will start Vite, which will serve your application with Hot Module Replacement (HMR).
+To start the development server, run `npm run dev`. This will start Vite, which will serve your application with Hot Module Replacement (HMR).
 
 ## Updating API Server .d.ts Types
 
-To update TypeScript types from the backend API server, run `pnpm codegen`. This will fetch Swagger data from backend and generate a TypeScript .d.ts file to make sure that all frontend API calls are fully type-safe.
+To update TypeScript types from the backend API server, run `npm run codegen`. This will fetch Swagger data from backend and generate a TypeScript .d.ts file to make sure that all frontend API calls are fully type-safe.
 
 ## Building
 
-To build the project, run `pnpm build`. This will first run TypeScript to check for type errors and then Vite to bundle your application.
+To build the project, run `npm run build`. This will first run TypeScript to check for type errors and then Vite to npmdle your application.
 
 ## Linting
 
-To lint the project, run `pnpm lint`. This will run ESLint on all `.ts` and `.tsx` files in the project.
+To lint the project, run `npm run lint`. This will run ESLint on all `.ts` and `.tsx` files in the project.
 
 ## Project Structure
 
 - `src/`: This is where your application's source code lives.
-  - `app.tsx`: The main component of your application.
-  - `main.tsx`: The entry point of your application. This is where the React Router is configured and the application is rendered.
+  - `index.tsx`: The entry point of your application. This is where the React Router is configured and the application is rendered.
+  - `container.tsx`: This file serves as an entry point for embedding the main application. It's designed to encapsulate the actual `index.html` for testing purposes. In development mode, it's compiled into `container.html`, but it won't be compiled in production mode.
+  - `assets/`: This directory contains static assets.
   - `components/`: This directory contains reusable React components.
   - `constants/`: This directory contains constants and enums used in this project.
   - `interfaces/`: This directory contains TypeScript types and interfaces.
@@ -52,7 +53,7 @@ To lint the project, run `pnpm lint`. This will run ESLint on all `.ts` and `.ts
 
 ## Routing
 
-Routing is handled by React Router v6. The routes are defined in [`src/main.tsx`](src/main.tsx) using the `createBrowserRouter` function.
+Routing is handled by React Router v6. The routes are defined in [`src/index.tsx`](src/main.tsx) using the `createBrowserRouter` function.
 
 ## Styling
 

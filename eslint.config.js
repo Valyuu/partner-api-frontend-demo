@@ -1,6 +1,3 @@
-// @ts-check
-
-import { fixupPluginRules } from '@eslint/compat'
 import eslint from '@eslint/js'
 import prettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -15,29 +12,21 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...tailwindcss.configs['flat/recommended'],
   {
-    files: ['tailwind.config.js', 'postcss.config.js'],
+    files: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
     languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-    },
-  },
-  prettierRecommended,
-  {
-    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.browser,
       },
     },
     plugins: {
-      tailwindcss,
+      tailwindcss: tailwindcss,
       'simple-import-sort': simpleImportSort,
       'react-refresh': reactRefresh,
-      // @ts-expect-error-next-line
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
     },
-    ignores: ['dist/**'],
-    // @ts-expect-error-next-line
+    ignores: ['dist/**', 'node_modules/**'],
     rules: {
       'no-fallthrough': 'warn',
       'simple-import-sort/imports': 'error',
@@ -45,6 +34,22 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       ...reactHooks.configs.recommended.rules,
+      'tailwindcss/classnames-order': [
+        'error',
+        {
+          // Add cva and cn as valid class name generators
+          validClassNames: ['cva', 'cn'],
+        },
+      ],
     },
-  }
+  },
+  {
+    files: ['tailwind.config.js', 'postcss.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  prettierRecommended
 )

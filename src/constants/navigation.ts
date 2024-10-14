@@ -1,19 +1,13 @@
-export const NAVIGATION_BRANDS_PAGE_ENABLED = true
-
-export const NAVIGATION_SHOW_NEXT_BUTTON_ON_QUESTIONS_PAGES = false
-
 export enum NavigationDestination {
-  Categories = '/categories',
-  Brands = '/brands',
-  Models = '/models',
-  ModelAttributes = '/model-attributes',
-  Guidances = '/guidances',
-  Conditions = '/conditions',
-  Problems = '/problems',
-  Confirmation = '/confirmation',
-  HistoryBack = -1,
-  HistoryForward = 1,
-  Current = '.',
+  Index = '',
+  Category = 'category',
+  Model = 'model',
+  ModelAttribute = 'model-attribute',
+  Problem = 'problem',
+  Condition = 'condition',
+  Summary = 'summary',
+  AddToCart = 'add-to-cart',
+  Success = 'success',
 }
 
 export enum NavigationFromAction {
