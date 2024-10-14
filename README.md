@@ -10,8 +10,8 @@ Technology stack: React, TypeScript, Vite, TailwindCSS, Shadcn UI, React Query, 
 2. Install the dependencies using `npm install`.
 3. Create a `.env` file and fill it with the content below:
 ```
-API_BASE_URL=https:/api-staging.valyuu.tech/partner   # Replace with your API base URL
-API_AUTH_KEY=secret                                   # Replace with your API authentication key
+API_BASE_URL=https://api-staging.valyuu.tech/partner   # Replace with your API base URL
+API_AUTH_KEY=secret                                    # Replace with your API authentication key
 ALLOWED_CATEGORIES={"smartphone":"smartphone_uuid_here","tablet":"tablet_uuid_here","smartwatch":"smartwatch_uuid_here"}  # Replace with actual UUIDs
 ```
 
