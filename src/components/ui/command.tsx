@@ -1,9 +1,7 @@
-import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
 import { ComponentPropsWithoutRef, ElementRef, forwardRef, HTMLAttributes } from 'react'
 import { LuSearch } from 'react-icons/lu'
 
-import { Dialog, DialogContent } from '~/components'
 import { cn } from '~/utils/ui'
 
 const Command = forwardRef<ElementRef<typeof CommandPrimitive>, ComponentPropsWithoutRef<typeof CommandPrimitive>>(
@@ -21,20 +19,6 @@ const Command = forwardRef<ElementRef<typeof CommandPrimitive>, ComponentPropsWi
 Command.displayName = CommandPrimitive.displayName
 
 const CommandLoading = CommandPrimitive.Loading
-
-type CommandDialogProps = DialogProps
-
-const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
-  return (
-    <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 shadow-lg">
-        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:size-5">
-          {children}
-        </Command>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 const CommandInput = forwardRef<
   ElementRef<typeof CommandPrimitive.Input>,
@@ -122,7 +106,6 @@ CommandShortcut.displayName = 'CommandShortcut'
 
 export {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,

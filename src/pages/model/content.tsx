@@ -86,6 +86,7 @@ export const ModelPageContent = ({
       value === filteredData.find((model) => model.id === modelId)?.name
     ) {
       onConfirm()
+      event.preventDefault()
     }
   }
 
