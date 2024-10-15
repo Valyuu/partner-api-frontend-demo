@@ -71,12 +71,13 @@ export const AddToCartPage: FC = () => {
 
         cartStore.push(cartItem)
         cartItemAdded.current = true
-        navigate('/' + NavigationDestination.Summary, { replace: true })
 
-        // Reset the store
+        // Reset the question result to prevent the user from seeing the empty cart add to cart page
         setTimeout(() => {
           resetQuestionResultsStore(NavigationDestination.Summary)
         }, 200)
+
+        navigate('/' + NavigationDestination.Summary, { replace: true })
       } else {
         setIneligibleProduct(cloneDeep(data.data))
         resetQuestionResultsStore(NavigationDestination.AddToCart)
