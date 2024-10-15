@@ -432,6 +432,10 @@ declare namespace Components {
        */
       name: string
       /**
+       * Additional brand name for the model. Used when the brand name is not included in the model name, ensuring the model can be found when searching by brand name.
+       */
+      additionalBrandName?: string
+      /**
        * Image URL for the model
        */
       image: string
