@@ -19,8 +19,8 @@ export const SuccessPage: FC = () => {
       nextButton: {
         textOverride: 'Verder met bestellen',
         onClick: () => {
-          cartStore.splice(0, cartStore.length)
           sendCreateTradeInEvent()
+          cartStore.splice(0, cartStore.length)
         },
       },
     })
