@@ -12,7 +12,6 @@ export const SummaryPage: FC = () => {
 
   const cart = useSnapshot(cartStore)
   const cartItemCount = cart.length
-  const { tocChecked } = useSnapshot(tocStore)
 
   const { totalSteps } = useSnapshot(progressBarStore)
 
@@ -34,7 +33,7 @@ export const SummaryPage: FC = () => {
         textOverride: cartItemCount ? 'Bevestigen' : 'Product toevoegen',
         onClick: () => {
           if (cartItemCount) {
-            if (tocChecked) {
+            if (tocStore.tocStatus.every(Boolean)) {
               navigate('/' + NavigationDestination.Success)
               return
             } else {
@@ -50,7 +49,7 @@ export const SummaryPage: FC = () => {
         },
       },
     })
-  }, [tocChecked, cartItemCount])
+  }, [cartItemCount])
 
   return <SummaryPageContent />
 }
