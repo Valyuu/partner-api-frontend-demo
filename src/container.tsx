@@ -4,7 +4,7 @@ import '~/assets/styles/font.css'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { ContainerLayout } from './layouts'
+import { ContainerLayout } from '~/components'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>

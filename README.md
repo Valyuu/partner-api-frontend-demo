@@ -45,7 +45,6 @@ To lint the project, run `npm run lint`. This will run ESLint on all `.ts` and `
   - `components/`: This directory contains reusable React components.
   - `constants/`: This directory contains constants and enums used in this project.
   - `interfaces/`: This directory contains TypeScript types and interfaces.
-  - `layouts/`: This directory contains React components used as layout parts.
   - `pages/`: This directory contains the pages of your application.
   - `queries/`: This directory contains React Query hooks for fetching/mutating the data from the backend API server.
   - `stores/`: This directory contains Valtio states used as stores for state management.

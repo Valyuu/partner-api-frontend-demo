@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
           ...(isProduction ? {} : { container: resolve(__dirname, 'container.html') }),
         },
       },
+      sourcemap: !isProduction,
     },
   }
 })

@@ -7,7 +7,7 @@ import { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 
-import { MainLayout } from '~/layouts'
+import { MainLayout } from '~/components'
 import * as pageExports from '~/pages'
 
 const router = createBrowserRouter(
