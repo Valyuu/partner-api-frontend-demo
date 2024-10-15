@@ -5,22 +5,22 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StrictMode } from 'react'
 import { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import { MainLayout } from '~/components'
 import * as pageExports from '~/pages'
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route element={<MainLayout />}>
-      {Object.entries(pageExports)
-        .filter(([key]) => key.endsWith('Route'))
-        .map(([, page]) => (
-          <Route path={page.path} element={<page.component />} key={page.path} />
-        ))}
-    </Route>
-  )
-)
+const router = createBrowserRouter([
+  {
+    element: <MainLayout />,
+    children: Object.entries(pageExports)
+      .filter(([key]) => key.endsWith('Route'))
+      .map(([, page]) => ({
+        path: page.path,
+        element: <page.component />,
+      })),
+  },
+])
 
 // Conditional import and render for ReactQueryDevtools
 const ReactQueryDevtools = import.meta.env.DEV
