@@ -9,10 +9,10 @@
     <div id="root"></div>
     <script type="module">
       if (window.self === window.top) {
-        if (import.meta.env.DEV) {
-          window.location.replace('/container.html')
-        } else {
+        if (import.meta.env.PROD) {
           document.getElementById('root').innerHTML = 'This page should be displayed within an iframe. If you continue to see this message, please <a href="mailto:hello@valyuu.com">contact us</a>.'
+        } else {
+          window.location.replace('/container.html')
         }
       } else {
         import('/src/index.tsx')

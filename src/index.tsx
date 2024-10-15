@@ -23,20 +23,20 @@ const router = createBrowserRouter([
 ])
 
 // Conditional import and render for ReactQueryDevtools
-const ReactQueryDevtools = import.meta.env.DEV
-  ? lazy(() =>
+const ReactQueryDevtools = import.meta.env.PROD
+  ? () => null
+  : lazy(() =>
       import('@tanstack/react-query-devtools').then((module) => ({
         default: module.ReactQueryDevtools,
       }))
     )
-  : () => null
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={new QueryClient()}>
       <RouterProvider router={router} />
       <Suspense fallback={null}>
-        {import.meta.env.DEV && (
+        {!import.meta.env.PROD && (
           <div className="opacity-30 transition-all hover:opacity-100">
             <ReactQueryDevtools />
           </div>
