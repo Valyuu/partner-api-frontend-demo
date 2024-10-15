@@ -9,9 +9,3 @@ export enum NavigationDestination {
   AddToCart = 'add-to-cart',
   Success = 'success',
 }
-
-export enum NavigationFromAction {
-  Back = 'back',
-  Forward = 'forward',
-  Reset = 'reset',
-}

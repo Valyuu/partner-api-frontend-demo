@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import { proxy } from 'valtio'
 
 import { NavigationDestination } from '~/constants'
@@ -26,7 +27,7 @@ export const QUESTION_SECTION_STORE_DEFAULT: QuestionSectionStoreType = {
   },
 }
 
-export const questionSectionStore = proxy<QuestionSectionStoreType>(QUESTION_SECTION_STORE_DEFAULT)
+export const questionSectionStore = proxy<QuestionSectionStoreType>(cloneDeep(QUESTION_SECTION_STORE_DEFAULT))
 
 export const correctQuestionCounts = (data: Components.Schemas.V1GetModelQuestionsOutput | undefined) => {
   if (data) {

@@ -1,6 +1,5 @@
 import scrollbar from 'tailwind-scrollbar'
 import animate from 'tailwindcss-animate'
-import debugScreen from 'tailwindcss-debug-screens'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -79,11 +78,6 @@ const config = {
     },
   },
   plugins: [animate, scrollbar({ nocompatible: true })],
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  config.plugins.push(debugScreen)
-  config.theme.debugScreens = { selector: 'body', position: ['bottom', 'left'] }
 }
 
 export default config

@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import { proxy } from 'valtio'
 
 export type FooterStoreButtonType = {
@@ -19,7 +20,7 @@ export const FOOTER_STORE_DEFAULT: FooterStoreType = {
   nextButton: undefined,
 }
 
-export const footerStore = proxy<FooterStoreType>(FOOTER_STORE_DEFAULT)
+export const footerStore = proxy<FooterStoreType>(cloneDeep(FOOTER_STORE_DEFAULT))
 
 export const setFooterComponents = (update: FooterStoreType) => {
   Object.assign(footerStore, FOOTER_STORE_DEFAULT, update)

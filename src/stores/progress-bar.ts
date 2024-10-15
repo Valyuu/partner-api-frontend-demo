@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import { proxy } from 'valtio'
 
 import { NavigationDestination } from '~/constants'
@@ -24,4 +25,4 @@ export const PROGRESS_BAR_STORE_DEFAULT: ProgressBarStoreType = {
   },
 }
 
-export const progressBarStore = proxy<ProgressBarStoreType>(PROGRESS_BAR_STORE_DEFAULT)
+export const progressBarStore = proxy<ProgressBarStoreType>(cloneDeep(PROGRESS_BAR_STORE_DEFAULT))

@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import { proxy } from 'valtio'
 
 export type TocStoreType = {
@@ -14,4 +15,4 @@ export const TOC_STORE_DEFAULT: TocStoreType = {
   showErrors: false,
 }
 
-export const tocStore = proxy<TocStoreType>(TOC_STORE_DEFAULT)
+export const tocStore = proxy<TocStoreType>(cloneDeep(TOC_STORE_DEFAULT))

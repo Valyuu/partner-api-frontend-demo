@@ -103,9 +103,6 @@ export const ProblemPage: FC = () => {
   const handleProblemSelect = ({ problems, isFunctional }: { problems: string[]; isFunctional?: boolean }) => {
     questionResultsStore[NavigationDestination.Problem] = problems
     questionResultsStore.isFunctional = isFunctional
-    if (isFunctional) {
-      goToNextPage()
-    }
   }
 
   return (

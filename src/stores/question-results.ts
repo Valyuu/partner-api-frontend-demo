@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash-es'
+
 import { NavigationDestination } from '~/constants'
 import { createPersistedStore } from '~/utils'
 
@@ -25,7 +27,7 @@ export const QUESTION_RESULTS_STORE_DEFAULT: QuestionResultsStoreType = {
 
 export const questionResultsStore = createPersistedStore<QuestionResultsStoreType>(
   QUESTION_RESULTS_STORE_KEY,
-  QUESTION_RESULTS_STORE_DEFAULT
+  cloneDeep(QUESTION_RESULTS_STORE_DEFAULT)
 )
 
 // Rest next question when current option changes
