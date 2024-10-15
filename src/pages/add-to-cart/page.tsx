@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash-es'
-import { FC, useLayoutEffect, useState } from 'react'
+import { FC, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import uuid from 'uuid-random'
 import { useSnapshot } from 'valtio'
@@ -43,9 +43,11 @@ export const AddToCartPage: FC = () => {
     enabled: Boolean(modelId && isFunctional !== undefined),
   })
 
+  const cartItemAdded = useRef(false)
+
   // Add data to the cart
   useLayoutEffect(() => {
-    if (data?.data) {
+    if (data?.data && !cartItemAdded.current) {
       // Hardcoded for now, until we have a way to select the payment plan
       const paymentPlan = data.data.paymentPlans.find((plan) => plan.plan === 'C2B')
 
@@ -68,6 +70,7 @@ export const AddToCartPage: FC = () => {
         }
 
         cartStore.push(cartItem)
+        cartItemAdded.current = true
         navigate('/' + NavigationDestination.Summary, { replace: true })
 
         // Reset the store
