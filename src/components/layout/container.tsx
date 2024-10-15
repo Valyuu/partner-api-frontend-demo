@@ -10,7 +10,11 @@ const textArt = `\x1b[38;2;50;50;251m
   ╚██╗ ██╔╝██╔══██║██║    ╚██╔╝  ██║   ██║██║   ██║
    ╚████╔╝ ██║  ██║███████╗██║   ╚██████╔╝╚██████╔╝
     ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝    ╚═════╝  ╚═════╝ 
-  \x1b[0m`
+
+  Empowering businesses with seamless electronics trade-in solutions
+  https://valyuu.com
+  © ${new Date().getFullYear()} Valyuu. All rights reserved.
+\x1b[0m`
 
 export const ContainerLayout = () => {
   const [showIframe, setShowIframe] = useState(false)
