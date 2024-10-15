@@ -9,7 +9,11 @@
     <div id="root"></div>
     <script type="module">
       if (window.self === window.top) {
-        document.getElementById('root').innerHTML = 'Please load this page in an iframe'
+        if (import.meta.env.DEV) {
+          window.location.replace('/container.html')
+        } else {
+          document.getElementById('root').innerHTML = 'This page should be displayed within an iframe. If you continue to see this message, please <a href="mailto:hello@valyuu.com">contact us</a>.'
+        }
       } else {
         import('/src/index.tsx')
       }
