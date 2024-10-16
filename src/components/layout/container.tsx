@@ -33,7 +33,7 @@ const defaultFormData: Omit<Components.Schemas.V1CreateTradeInInput, 'items'> = 
     firstName: 'John',
     lastName: 'Doe',
     country: 'NL',
-    postalCode: '1234 AB',
+    postalCode: '1011 AA',
     houseNumber: '42',
     addition: 'A',
     street: 'Main Street',
@@ -127,7 +127,7 @@ export const ContainerLayout = () => {
         },
         onError: (error) => {
           console.error('Error creating Trade-In:', error)
-          setTradeInResult({ error: error.message })
+          setTradeInResult({ error })
           toast.error(`Error creating Trade-In: ${error.message}`)
           setActiveTab('tradeInResult')
         },
@@ -204,6 +204,7 @@ export const ContainerLayout = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="flex gap-8">
               <div className="flex flex-col gap-4">
                 <div className="rounded-lg bg-white p-6 text-black">
+                  <h2 className="mb-4 text-xl font-bold">Customer Info</h2>
                   <div className="space-y-4">
                     {/* Email and Date of Birth */}
                     <div className="grid grid-cols-2 gap-4">
@@ -433,7 +434,7 @@ export const ContainerLayout = () => {
                       render={({ field }) => (
                         <div className="space-y-2">
                           <label htmlFor={field.name} className="block">
-                            Bank Account Number
+                            IBAN Number
                           </label>
                           <input
                             {...field}
@@ -527,9 +528,9 @@ export const ContainerLayout = () => {
             </form>
           </div>
 
-          {/* New block for displaying data with tabs */}
+          {/* Updated block for displaying data with tabs */}
           <div className="max-w-[918px] rounded-lg bg-white p-6 text-black">
-            <h2 className="mb-4 text-xl font-bold">Application Data</h2>
+            <h2 className="mb-4 text-xl font-bold">Data Inspector</h2>
             <div className="mb-4 flex border-b">
               {(['formData', 'cartData', 'tradeInResult'] as const).map((tab) => (
                 <button
@@ -541,7 +542,7 @@ export const ContainerLayout = () => {
                   }`}
                   onClick={() => setActiveTab(tab)}
                 >
-                  {tab === 'formData' ? 'Form Data' : tab === 'cartData' ? 'Cart Data' : 'Trade-In Result'}
+                  {tab === 'formData' ? 'Customer Info' : tab === 'cartData' ? 'Cart Data' : 'Trade-In Result'}
                 </button>
               ))}
             </div>

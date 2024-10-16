@@ -12,7 +12,7 @@ type CircleDivProps = {
 const CircleDiv = ({ number, withDots }: CircleDivProps) => (
   <div
     className={cn('w-16 flex-none self-stretch', {
-      "bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNEOEQ4RDgiLz48L3N2Zz4=')] bg-center bg-repeat-y -mb-4":
+      "bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNEOEQ4RDgiLz48L3N2Zz4=')] bg-center bg-repeat-y -mb-8":
         withDots,
     })}
   >
