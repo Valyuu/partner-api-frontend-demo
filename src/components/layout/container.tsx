@@ -1,8 +1,10 @@
+import 'react-toastify/dist/ReactToastify.css'
+
 import { upperFirst } from 'lodash-es'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { TfiClose } from 'react-icons/tfi'
 import ReactJson, { ThemeKeys } from 'react-json-view'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 
 import { Button } from '~/components'
 import { useCreateTradeIn } from '~/queries'
@@ -68,7 +70,7 @@ export const ContainerLayout = () => {
   const [formData, setFormData] = useState<Components.Schemas.V1CreateTradeInInput>(defaultFormData)
   const { mutate: createTradeIn } = useCreateTradeIn()
   const [tradeInResult, setTradeInResult] = useState<Components.Schemas.V1CreateTradeInOutput | {}>({})
-  const [activeTab, setActiveTab] = useState('formData')
+  const [activeTab, setActiveTab] = useState<'formData' | 'cartData' | 'tradeInResult'>('formData')
   // Load cart items and form data from sessionStorage on component mount
   useEffect(() => {
     const storedCartItems = sessionStorage.getItem('cartItems')
@@ -92,7 +94,7 @@ export const ContainerLayout = () => {
     sessionStorage.setItem('cartItems', JSON.stringify(cartItems))
   }, [cartItems])
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formRef.current) return
 
@@ -172,6 +174,15 @@ export const ContainerLayout = () => {
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
+
+  const deleteCartItem = (itemId: string) => {
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== itemId)
+      sessionStorage.setItem('cartItems', JSON.stringify(updatedItems))
+      return updatedItems
+    })
+    toast.success('Item removed from cart')
+  }
 
   return (
     <main className="relative flex h-screen w-screen items-center justify-center bg-[#4C4C4C] p-6 text-base text-white">
@@ -390,20 +401,29 @@ export const ContainerLayout = () => {
                   <ul className="space-y-4">
                     {cartItems.map((item) => (
                       <li key={item.id} className="border-b pb-4">
-                        <div className="flex items-center gap-4">
-                          <img
-                            src={item.display.image}
-                            alt={item.display.name}
-                            className="h-auto max-w-24 rounded-md object-cover"
-                          />
-                          <div>
-                            <h3 className="font-semibold">{item.display.name}</h3>
-                            <ul className="mt-1 text-xs text-gray-600">
-                              {item.display.attributes.map((attr, index) => (
-                                <li key={index}>{attr}</li>
-                              ))}
-                            </ul>
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={item.display.image}
+                              alt={item.display.name}
+                              className="h-auto max-w-24 rounded-md object-cover"
+                            />
+                            <div>
+                              <h3 className="font-semibold">{item.display.name}</h3>
+                              <ul className="mt-1 text-xs text-gray-600">
+                                {item.display.attributes.map((attr, index) => (
+                                  <li key={index}>{attr}</li>
+                                ))}
+                              </ul>
+                            </div>
                           </div>
+                          <button
+                            onClick={() => deleteCartItem(item.id)}
+                            className="self-start text-black hover:text-gray-900"
+                            aria-label="Delete item"
+                          >
+                            <TfiClose size={12} />
+                          </button>
                         </div>
                         <div className="mt-2 text-right text-lg font-medium">€{item.data.price.toFixed(2)}</div>
                       </li>
@@ -430,12 +450,12 @@ export const ContainerLayout = () => {
           <div className="max-w-[918px] rounded-lg bg-white p-6 text-black">
             <h2 className="mb-4 text-xl font-bold">Application Data</h2>
             <div className="mb-4 flex border-b">
-              {['formData', 'cartData', 'tradeInResult'].map((tab) => (
+              {(['formData', 'cartData', 'tradeInResult'] as const).map((tab) => (
                 <button
                   key={tab}
                   className={`px-4 py-2 ${
                     activeTab === tab
-                      ? 'border-b-2 border-blue-500 bg-blue-100 font-semibold text-blue-700'
+                      ? 'border-b-2 border-blue-500 font-semibold'
                       : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
                   }`}
                   onClick={() => setActiveTab(tab)}
@@ -464,6 +484,7 @@ export const ContainerLayout = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </main>
   )
 }
