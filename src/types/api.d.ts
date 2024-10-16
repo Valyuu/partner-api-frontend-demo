@@ -143,10 +143,6 @@ declare namespace Components {
        * Human readable order number associated with the trade-in
        */
       tradeInOrderNumber: string
-      /**
-       * URL for the shippinglabel PDF
-       */
-      shippingLabel: string
     }
     export interface V1CreateTradeInShippingAddressInput {
       /**
@@ -621,10 +617,6 @@ declare namespace Components {
          * Human readable order number associated with the trade-in
          */
         tradeInOrderNumber: string
-        /**
-         * URL for the shippinglabel PDF
-         */
-        shippingLabel: string
       }
     }
     export interface V1WrappedGetBrandsOutput {
