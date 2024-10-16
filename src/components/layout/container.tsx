@@ -73,6 +73,16 @@ export const ContainerLayout = () => {
   const [tradeInResult, setTradeInResult] = useState<Components.Schemas.V1CreateTradeInOutput | {}>({})
   const [activeTab, setActiveTab] = useState<'formData' | 'cartData' | 'tradeInResult'>('formData')
 
+  // Add this effect to watch for form changes
+  useEffect(() => {
+    const subscription = watch((_, { name, type }) => {
+      if (name && type === 'change') {
+        setActiveTab('formData')
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
+
   // Load cart items and form data from sessionStorage on component mount
   useEffect(() => {
     const storedCartItems = sessionStorage.getItem('cartItems')
