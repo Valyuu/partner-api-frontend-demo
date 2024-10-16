@@ -1,7 +1,9 @@
 import 'react-toastify/dist/ReactToastify.css'
 
+import devtoolsDetect from 'devtools-detect'
 import { upperFirst } from 'lodash-es'
-import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { TfiClose } from 'react-icons/tfi'
 import ReactJson, { ThemeKeys } from 'react-json-view'
 import { toast, ToastContainer } from 'react-toastify'
@@ -23,7 +25,7 @@ const textArt = `\x1b[38;2;50;50;251m
   © ${new Date().getFullYear()} Valyuu. All rights reserved.
 \x1b[0m`
 
-const defaultFormData: Components.Schemas.V1CreateTradeInInput = {
+const defaultFormData: Omit<Components.Schemas.V1CreateTradeInInput, 'items'> = {
   email: 'hello@valyuu.com',
   dateOfBirth: '1980-01-01',
   shippingAddress: {
@@ -41,7 +43,6 @@ const defaultFormData: Components.Schemas.V1CreateTradeInInput = {
   bankAccount: {
     accountNumber: 'NL39RABO0300065264',
   },
-  items: [],
   paymentType: 'BANK_TRANSFER',
 }
 
@@ -65,12 +66,13 @@ const jsonViewerProps = {
 export const ContainerLayout = () => {
   const [showIframe, setShowIframe] = useState(false)
   const [cartItems, setCartItems] = useState<CartStoreItemType[]>([])
-  const formRef = useRef<HTMLFormElement>(null)
-  const [paymentType, setPaymentType] = useState('BANK_TRANSFER')
-  const [formData, setFormData] = useState<Components.Schemas.V1CreateTradeInInput>(defaultFormData)
+  const { control, handleSubmit, setValue, watch } = useForm<Omit<Components.Schemas.V1CreateTradeInInput, 'items'>>({
+    defaultValues: defaultFormData,
+  })
   const { mutate: createTradeIn } = useCreateTradeIn()
   const [tradeInResult, setTradeInResult] = useState<Components.Schemas.V1CreateTradeInOutput | {}>({})
   const [activeTab, setActiveTab] = useState<'formData' | 'cartData' | 'tradeInResult'>('formData')
+
   // Load cart items and form data from sessionStorage on component mount
   useEffect(() => {
     const storedCartItems = sessionStorage.getItem('cartItems')
@@ -81,82 +83,56 @@ export const ContainerLayout = () => {
     const storedFormData = sessionStorage.getItem('formData')
     if (storedFormData) {
       const parsedFormData = JSON.parse(storedFormData)
-      setFormData(parsedFormData)
-      setPaymentType(parsedFormData.paymentType)
+      Object.keys(parsedFormData).forEach((key) => {
+        if (typeof parsedFormData[key] === 'object' && parsedFormData[key] !== null) {
+          Object.keys(parsedFormData[key]).forEach((nestedKey) => {
+            setValue(`${key}.${nestedKey}` as any, parsedFormData[key][nestedKey])
+          })
+        } else {
+          setValue(key as keyof Omit<Components.Schemas.V1CreateTradeInInput, 'items'>, parsedFormData[key])
+        }
+      })
     } else {
       sessionStorage.setItem('formData', JSON.stringify(defaultFormData))
-      setFormData(defaultFormData)
     }
-  }, [])
+  }, [setValue])
 
   // Update sessionStorage when cartItems change
   useEffect(() => {
     sessionStorage.setItem('cartItems', JSON.stringify(cartItems))
   }, [cartItems])
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!formRef.current) return
+  const onSubmit = (data: Omit<Components.Schemas.V1CreateTradeInInput, 'items'>) => {
+    console.log('Form data submitted:', data)
 
-    const formData = new FormData(formRef.current)
-    const data = Object.fromEntries(formData.entries())
-
-    // Restructure the data to match the original format
-    const formattedData: Components.Schemas.V1CreateTradeInInput = {
-      email: data.email as string,
-      dateOfBirth: data.dateOfBirth as string,
-      shippingAddress: {
-        firstName: data.firstName as string,
-        lastName: data.lastName as string,
-        country: data.country as string,
-        postalCode: data.postalCode as string,
-        houseNumber: data.houseNumber as string,
-        addition: data.addition as string,
-        street: data.street as string,
-        city: data.city as string,
-        phoneAreaCode: data.phoneAreaCode as string,
-        phoneNumber: data.phoneNumber as string,
-      },
-      bankAccount:
-        data.paymentType === 'BANK_TRANSFER'
-          ? {
-              accountNumber: data.accountNumber as string,
-            }
-          : undefined,
-      items: cartItems.map((item) => item.data),
-      paymentType: data.paymentType as Components.Schemas.SalePaymentType,
-    }
-
-    // Log the formatted data to the console
-    console.log('Form data submitted:', formattedData)
-
-    createTradeIn(formattedData, {
-      onSuccess: (data) => {
-        console.log('Trade-In created successfully:', data)
-        setTradeInResult(data)
-        toast.success('Trade-In created successfully!')
-        setActiveTab('tradeInResult')
-      },
-      onError: (error) => {
-        console.error('Error creating Trade-In:', error)
-        setTradeInResult({ error: error.message })
-        toast.error(`Error creating Trade-In: ${error.message}`)
-        setActiveTab('tradeInResult')
-      },
-    })
+    createTradeIn(
+      { ...data, items: cartItems.map((item) => item.data) },
+      {
+        onSuccess: (result) => {
+          console.log('Trade-In created successfully:', result)
+          setTradeInResult(result)
+          toast.success('Trade-In created successfully!')
+          setActiveTab('tradeInResult')
+        },
+        onError: (error) => {
+          console.error('Error creating Trade-In:', error)
+          setTradeInResult({ error: error.message })
+          toast.error(`Error creating Trade-In: ${error.message}`)
+          setActiveTab('tradeInResult')
+        },
+      }
+    )
 
     // Save form data to sessionStorage
-    sessionStorage.setItem('formData', JSON.stringify(formattedData))
+    sessionStorage.setItem('formData', JSON.stringify(data))
   }
 
   const handleMessage = (event: MessageEvent) => {
     if (event?.data?.eventType === 'valyuuCancelTradeIn') {
       setShowIframe(false)
-      console.log(textArt)
       console.log(event.data)
     } else if (event?.data?.eventType === 'valyuuCreateTradeIn') {
       setShowIframe(false)
-      console.log(textArt)
       if (event?.data?.data?.length) {
         setCartItems((cart: CartStoreItemType[]) => {
           const updatedCart = [...cart, ...event.data.data]
@@ -170,9 +146,20 @@ export const ContainerLayout = () => {
     }
   }
 
+  const handleDevtoolsChange = () => {
+    if (devtoolsDetect.isOpen) {
+      console.clear()
+      console.log(textArt)
+    }
+  }
+
   useLayoutEffect(() => {
     window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
+    window.addEventListener('devtoolschange', handleDevtoolsChange)
+    return () => {
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('devtoolschange', handleDevtoolsChange)
+    }
   }, [])
 
   const deleteCartItem = (itemId: string) => {
@@ -203,153 +190,225 @@ export const ContainerLayout = () => {
             Open Trade-In
           </Button>
           <div className="flex max-w-[918px] gap-8">
-            <form ref={formRef} onSubmit={handleSubmit} className="flex gap-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-8">
               <div className="flex flex-col gap-4">
                 <div className="rounded-lg bg-white p-6 text-black">
                   <div className="space-y-4">
                     {/* Email and Date of Birth */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label htmlFor="email" className="block">
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          defaultValue={formData?.email || 'hello@valyuu.com'}
-                          className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor="dateOfBirth" className="block">
-                          Date of Birth
-                        </label>
-                        <input
-                          type="date"
-                          name="dateOfBirth"
-                          defaultValue={formData?.dateOfBirth || '1980-01-01'}
-                          className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                        />
-                      </div>
+                      <Controller
+                        name="email"
+                        control={control}
+                        rules={{
+                          required: 'Email is required',
+                          pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' },
+                        }}
+                        render={({ field, fieldState: { error } }) => (
+                          <div className="space-y-2">
+                            <label htmlFor={field.name} className="block">
+                              Email
+                            </label>
+                            <input
+                              {...field}
+                              type="email"
+                              className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                            />
+                            {error && <span className="text-sm text-red-500">{error.message}</span>}
+                          </div>
+                        )}
+                      />
+                      <Controller
+                        name="dateOfBirth"
+                        control={control}
+                        rules={{ required: 'Date of Birth is required' }}
+                        render={({ field, fieldState: { error } }) => (
+                          <div className="space-y-2">
+                            <label htmlFor={field.name} className="block">
+                              Date of Birth
+                            </label>
+                            <input
+                              {...field}
+                              type="date"
+                              className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                            />
+                            {error && <span className="text-sm text-red-500">{error.message}</span>}
+                          </div>
+                        )}
+                      />
                     </div>
 
                     {/* Shipping Address */}
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-4">
-                        {/* Update all input fields with the new focus styles */}
-                        <div className="space-y-1">
-                          <label htmlFor="firstName" className="block">
-                            First Name
-                          </label>
-                          <input
-                            type="text"
-                            name="firstName"
-                            defaultValue={formData.shippingAddress.firstName}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="lastName" className="block">
-                            Last Name
-                          </label>
-                          <input
-                            type="text"
-                            name="lastName"
-                            defaultValue={formData.shippingAddress.lastName}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="country" className="block">
-                            Country
-                          </label>
-                          <select
-                            name="country"
-                            defaultValue={formData.shippingAddress.country}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          >
-                            <option value="NL">Netherlands</option>
-                            <option value="BE">Belgium</option>
-                            <option value="DE">Germany</option>
-                            {/* Add more countries as needed */}
-                          </select>
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="postalCode" className="block">
-                            Postal Code
-                          </label>
-                          <input
-                            type="text"
-                            name="postalCode"
-                            defaultValue={formData.shippingAddress.postalCode}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="houseNumber" className="block">
-                            House Number
-                          </label>
-                          <input
-                            type="text"
-                            name="houseNumber"
-                            defaultValue={formData.shippingAddress.houseNumber}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="addition" className="block">
-                            Addition
-                          </label>
-                          <input
-                            type="text"
-                            name="addition"
-                            defaultValue={formData.shippingAddress.addition}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="street" className="block">
-                            Street
-                          </label>
-                          <input
-                            type="text"
-                            name="street"
-                            defaultValue={formData.shippingAddress.street}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="city" className="block">
-                            City
-                          </label>
-                          <input
-                            type="text"
-                            name="city"
-                            defaultValue={formData.shippingAddress.city}
-                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                          />
-                        </div>
+                        {/* Update all input fields to use Controller */}
+                        <Controller
+                          name="shippingAddress.firstName"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                First Name
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.lastName"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                Last Name
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.country"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                Country
+                              </label>
+                              <select
+                                {...field}
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              >
+                                <option value="NL">Netherlands</option>
+                                <option value="BE">Belgium</option>
+                                <option value="DE">Germany</option>
+                                {/* Add more countries as needed */}
+                              </select>
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.postalCode"
+                          control={control}
+                          rules={{
+                            required: 'Postal Code is required',
+                            pattern: { value: /^[0-9]{4}\s?[A-Z]{2}$/, message: 'Invalid postal code format' },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                Postal Code
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.houseNumber"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                House Number
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.addition"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                Addition
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.street"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                Street
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
+                        <Controller
+                          name="shippingAddress.city"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="space-y-1">
+                              <label htmlFor={field.name} className="block">
+                                City
+                              </label>
+                              <input
+                                {...field}
+                                type="text"
+                                className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                              />
+                            </div>
+                          )}
+                        />
                         <div className="col-span-2 space-y-1">
                           <label htmlFor="phoneNumber" className="block">
                             Phone Number
                           </label>
                           <div className="flex gap-4">
-                            <select
-                              name="phoneAreaCode"
-                              defaultValue={formData.shippingAddress.phoneAreaCode}
-                              className="w-24 flex-none rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                            >
-                              {phoneAreaCodes.map((option) => (
-                                <option key={option.code} value={option.code}>
-                                  {option.country} ({option.code})
-                                </option>
-                              ))}
-                            </select>
-                            <input
-                              type="text"
-                              name="phoneNumber"
-                              defaultValue={formData.shippingAddress.phoneNumber}
-                              className="flex-1 rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                            <Controller
+                              name="shippingAddress.phoneAreaCode"
+                              control={control}
+                              render={({ field }) => (
+                                <select
+                                  {...field}
+                                  className="w-24 flex-none rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                >
+                                  {phoneAreaCodes.map((option) => (
+                                    <option key={option.code} value={option.code}>
+                                      {option.country} ({option.code})
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                            />
+                            <Controller
+                              name="shippingAddress.phoneNumber"
+                              control={control}
+                              render={({ field }) => (
+                                <input
+                                  {...field}
+                                  type="text"
+                                  className="flex-1 rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                />
+                              )}
                             />
                           </div>
                         </div>
@@ -357,35 +416,46 @@ export const ContainerLayout = () => {
                     </div>
 
                     {/* Bank Account Number */}
-                    <div className="space-y-2">
-                      <label htmlFor="accountNumber" className="block">
-                        Bank Account Number
-                      </label>
-                      <input
-                        type="text"
-                        name="accountNumber"
-                        defaultValue={formData?.bankAccount?.accountNumber || 'NL39RABO0300065264'}
-                        className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300 disabled:bg-gray-100 disabled:text-gray-400"
-                        disabled={paymentType !== 'BANK_TRANSFER'}
-                      />
-                    </div>
+                    <Controller
+                      name="bankAccount.accountNumber"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="space-y-2">
+                          <label htmlFor={field.name} className="block">
+                            Bank Account Number
+                          </label>
+                          <input
+                            {...field}
+                            type="text"
+                            className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300 disabled:bg-gray-100 disabled:text-gray-400"
+                            disabled={watch('paymentType') !== 'BANK_TRANSFER'}
+                          />
+                        </div>
+                      )}
+                    />
 
                     {/* Payment Type */}
                     <div className="space-y-2">
                       <label className="block">Payment Type</label>
                       <div className="flex gap-4">
                         {['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK'].map((type) => (
-                          <label key={type} className="inline-flex select-none items-center">
-                            <input
-                              type="radio"
-                              name="paymentType"
-                              value={type}
-                              defaultChecked={type === (formData?.paymentType || 'BANK_TRANSFER')}
-                              className="mr-2"
-                              onChange={() => setPaymentType(type)}
-                            />
-                            {upperFirst(type.replace(/_/g, ' ').toLowerCase())}
-                          </label>
+                          <Controller
+                            key={type}
+                            name="paymentType"
+                            control={control}
+                            render={({ field }) => (
+                              <label className="inline-flex select-none items-center">
+                                <input
+                                  type="radio"
+                                  {...field}
+                                  value={type}
+                                  checked={field.value === type}
+                                  className="mr-2"
+                                />
+                                {upperFirst(type.replace(/_/g, ' ').toLowerCase())}
+                              </label>
+                            )}
+                          />
                         ))}
                       </div>
                     </div>
@@ -467,7 +537,7 @@ export const ContainerLayout = () => {
             <div className="mt-4">
               {activeTab === 'formData' && (
                 <div className="h-[300px] overflow-y-auto">
-                  <ReactJson src={formData} {...jsonViewerProps} theme={jsonViewerProps.theme} />
+                  <ReactJson src={watch()} {...jsonViewerProps} theme={jsonViewerProps.theme} />
                 </div>
               )}
               {activeTab === 'cartData' && (

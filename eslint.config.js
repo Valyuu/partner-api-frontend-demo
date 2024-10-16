@@ -29,6 +29,7 @@ export default tseslint.config(
     ignores: ['dist/**', 'node_modules/**'],
     rules: {
       'no-fallthrough': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       '@typescript-eslint/no-empty-object-type': 'off',
