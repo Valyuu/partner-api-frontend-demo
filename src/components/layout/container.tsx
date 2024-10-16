@@ -2,6 +2,7 @@ import { upperFirst } from 'lodash-es'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { TfiClose } from 'react-icons/tfi'
 import ReactJson, { ThemeKeys } from 'react-json-view'
+import { toast } from 'react-toastify'
 
 import { Button } from '~/components'
 import { useCreateTradeIn } from '~/queries'
@@ -131,10 +132,14 @@ export const ContainerLayout = () => {
       onSuccess: (data) => {
         console.log('Trade-In created successfully:', data)
         setTradeInResult(data)
+        toast.success('Trade-In created successfully!')
+        setActiveTab('tradeInResult')
       },
       onError: (error) => {
         console.error('Error creating Trade-In:', error)
         setTradeInResult({ error: error.message })
+        toast.error(`Error creating Trade-In: ${error.message}`)
+        setActiveTab('tradeInResult')
       },
     })
 
@@ -156,6 +161,8 @@ export const ContainerLayout = () => {
           sessionStorage.setItem('cartItems', JSON.stringify(updatedCart))
           return updatedCart
         })
+        toast.success('Items added to cart successfully!')
+        setActiveTab('cartData')
       }
       console.log(event.data)
     }
@@ -428,8 +435,8 @@ export const ContainerLayout = () => {
                   key={tab}
                   className={`px-4 py-2 ${
                     activeTab === tab
-                      ? 'border-b-2 border-blue-500 font-semibold text-blue-500'
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'border-b-2 border-blue-500 bg-blue-100 font-semibold text-blue-700'
+                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
                   }`}
                   onClick={() => setActiveTab(tab)}
                 >
