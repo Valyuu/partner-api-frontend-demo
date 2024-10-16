@@ -136,6 +136,10 @@ declare namespace Components {
        */
       tradeInId: string // uuid
       /**
+       * Unique identifier for the user
+       */
+      userId: string // uuid
+      /**
        * Human readable order number associated with the trade-in
        */
       tradeInOrderNumber: string
@@ -609,6 +613,10 @@ declare namespace Components {
          * Unique identifier for the trade-in
          */
         tradeInId: string // uuid
+        /**
+         * Unique identifier for the user
+         */
+        userId: string // uuid
         /**
          * Human readable order number associated with the trade-in
          */
