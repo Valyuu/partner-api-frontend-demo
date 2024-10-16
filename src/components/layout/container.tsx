@@ -11,6 +11,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import { Button } from '~/components'
 import { useCreateTradeIn } from '~/queries'
 import { CartStoreItemType } from '~/stores'
+import { addMoney } from '~/utils'
 
 const textArt = `\x1b[38;2;50;50;251m
   ██╗   ██╗ █████╗ ██╗  ██╗   ██╗██╗   ██╗██╗   ██╗
@@ -511,7 +512,7 @@ export const ContainerLayout = () => {
                   </ul>
                 )}
                 <div className="mt-4 text-right text-xl font-bold">
-                  Total: €{(cartItems.reduce((sum, item) => sum * 100 + item.data.price * 100, 0) / 100).toFixed(2)}
+                  Total: €{cartItems.reduce((sum, item) => addMoney(sum, item.data.price), 0).toFixed(2)}
                 </div>
                 <div className="mt-auto pt-4">
                   <Button
