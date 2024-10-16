@@ -10,6 +10,7 @@ import { useTradeInItemData } from '~/queries'
 import {
   cartStore,
   CartStoreItemType,
+  footerStore,
   progressBarStore,
   questionResultsStore,
   resetQuestionResultsStore,
@@ -48,6 +49,10 @@ export const AddToCartPage: FC = () => {
   // Add data to the cart
   useLayoutEffect(() => {
     if (data?.data && !cartItemAdded.current) {
+      if (footerStore?.nextButton) {
+        footerStore.nextButton.disabled = false
+      }
+
       // Hardcoded for now, until we have a way to select the payment plan
       const paymentPlan = data.data.paymentPlans.find((plan) => plan.plan === 'C2B')
 
@@ -94,6 +99,7 @@ export const AddToCartPage: FC = () => {
       poweredBy: false,
       prevButton: undefined,
       nextButton: {
+        disabled: true,
         textOverride: cartItems.length ? 'Naar inruiloverzicht' : 'Nieuw apparaat inruilen',
         onClick: () => {
           navigate('/' + (cartItems.length ? NavigationDestination.Summary : NavigationDestination.Category))
