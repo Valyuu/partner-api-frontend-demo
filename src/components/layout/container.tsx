@@ -401,7 +401,7 @@ export const ContainerLayout = () => {
                               render={({ field }) => (
                                 <select
                                   {...field}
-                                  className="w-24 flex-none rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                  className="w-28 flex-none rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                                 >
                                   {phoneAreaCodes.map((option) => (
                                     <option key={option.code} value={option.code}>
