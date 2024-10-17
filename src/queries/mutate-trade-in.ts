@@ -14,7 +14,7 @@ const useCreateTradeIn = () => {
           'Content-Type': 'application/json',
           Authorization: authKey,
         },
-        body: JSON.stringify(tradeInData),
+        body: JSON.stringify({ ...tradeInData, partnerPlatform: 'EMBEDDED' }),
       })
 
       if (!response.ok) {

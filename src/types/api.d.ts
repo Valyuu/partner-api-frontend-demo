@@ -5,6 +5,10 @@ declare namespace Components {
      */
     export type FaqCollectionType = 'SELLER_PLAN' | 'SELLER_MAIN' | 'BUYER_MAIN'
     /**
+     * Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED
+     */
+    export type PartnerPlatform = 'STANDALONE' | 'EMBEDDED'
+    /**
      * The time unit for the payment time
      */
     export type PaymentTimeUnit = 'HOURS' | 'DAYS'
@@ -99,6 +103,7 @@ declare namespace Components {
          */
         accountNumber: string
       }
+      partnerPlatform?: /* Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED */ PartnerPlatform
       /**
        * If it's set to true, Valyuu will send the seller an email. Defaults to false
        */
