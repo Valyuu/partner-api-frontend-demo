@@ -275,13 +275,13 @@ export const ContainerLayout = () => {
           </Button>
         </div>
       ) : (
-        <div className="flex max-h-full flex-col gap-8 overflow-y-auto">
+        <div className="flex max-h-full w-[54rem] flex-col gap-8 overflow-y-auto">
           <Button onClick={() => setShowIframe(true)} className="self-center">
             Open Trade-In
           </Button>
-          <div className="flex max-w-[918px] gap-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-8">
-              <div className="flex w-[32rem] flex-none flex-col gap-4">
+          <div className="flex w-full gap-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex w-full gap-8">
+              <div className="flex w-[30rem] flex-none flex-col gap-4">
                 <div className="rounded-lg bg-white p-6 text-black">
                   <h2 className="mb-4 text-xl font-bold">Customer Info</h2>
                   <div className="space-y-4">
@@ -556,7 +556,7 @@ export const ContainerLayout = () => {
                 </div>
               </div>
 
-              <div className="flex w-96 flex-col rounded-lg bg-white p-6 text-black">
+              <div className="flex flex-1 flex-col rounded-lg bg-white p-6 text-black">
                 <h2 className="mb-4 text-xl font-bold">Cart</h2>
                 {cartItems.length === 0 ? (
                   <p>Your cart is empty</p>
@@ -610,7 +610,7 @@ export const ContainerLayout = () => {
           </div>
 
           {/* Updated block for displaying data with tabs */}
-          <div className="max-w-[918px] rounded-lg bg-white p-6 text-black">
+          <div className="w-full rounded-lg bg-white p-6 text-black">
             <h2 className="mb-4 text-xl font-bold">Data Inspector</h2>
             <div className="mb-4 flex border-b">
               {(['formData', 'cartData', 'tradeInResult'] as const).map((tab) => (
