@@ -1,12 +1,16 @@
 import 'react-toastify/dist/ReactToastify.css'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format, isAfter, isBefore, subYears } from 'date-fns'
 import devtoolsDetect from 'devtools-detect'
 import { omit, upperFirst } from 'lodash-es'
+import { postcodeValidator } from 'postcode-validator'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TfiClose } from 'react-icons/tfi'
 import ReactJson, { ThemeKeys } from 'react-json-view'
 import { toast, ToastContainer } from 'react-toastify'
+import { z } from 'zod'
 
 import { Button } from '~/components'
 import { useCreateTradeIn } from '~/queries'
@@ -64,66 +68,87 @@ const jsonViewerProps = {
   },
 }
 
-// Add these custom validation functions
-const validateNameMaxLength = (firstName: string, lastName: string) => {
-  return firstName.trim().length + lastName.trim().length <= 35
-}
+// Define the Zod schema
+const formSchema = z
+  .object({
+    email: z.string().email('Invalid email address'),
+    dateOfBirth: z.string().refine(
+      (value) => {
+        const date = new Date(value)
+        const eighteenYearsAgo = subYears(new Date(), 18)
+        const oldestAllowedDate = new Date('1920-01-01')
+        return isAfter(date, oldestAllowedDate) && isBefore(date, eighteenYearsAgo)
+      },
+      { message: 'Must be at least 18 years old and a valid date' }
+    ),
+    shippingAddress: z.object({
+      firstName: z.string().min(1, 'First Name is required').max(30, 'First Name must be 30 characters or less'),
+      lastName: z.string().min(1, 'Last Name is required').max(30, 'Last Name must be 30 characters or less'),
+      country: z.string().refine((value) => ['NL', 'BE', 'DE'].includes(value), {
+        message: "Country must be either 'NL', 'BE', or 'DE'",
+      }),
+      postalCode: z.string(),
+      houseNumber: z
+        .string()
+        .min(1, 'House Number is required')
+        .refine((value) => /\d/.test(value), { message: 'House number must contain at least one digit' }),
+      addition: z.string().optional(),
+      street: z.string().min(3, 'Street must be at least 3 characters long'),
+      city: z.string().min(1, 'City is required'),
+      phoneAreaCode: z.string(),
+      phoneNumber: z.string().min(4).max(15).regex(/^\d+$/, 'Phone Number must contain only digits'),
+    }),
+    bankAccount: z.object({
+      accountNumber: z
+        .string()
+        .refine((value) => /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/.test(value.replace(/\s/g, '')), {
+          message: 'Invalid IBAN number',
+        }),
+    }),
+    paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK']),
+  })
+  .refine(
+    (data) => {
+      const postalCode = data.shippingAddress.postalCode
+      const country = data.shippingAddress.country
+      if (!country) {
+        return true
+      }
+      return postcodeValidator(postalCode, country)
+    },
+    { message: 'Invalid postal code for the selected country', path: ['shippingAddress.postalCode'] }
+  )
+  .refine(
+    (data) => {
+      const fullName = `${data.shippingAddress.firstName} ${data.shippingAddress.lastName}`
+      return fullName.length <= 35
+    },
+    { message: 'Combined name length must not exceed 35 characters', path: ['shippingAddress.firstName'] }
+  )
+  .refine(
+    (data) => {
+      const houseNumberWithAddition = `${data.shippingAddress.houseNumber}${data.shippingAddress.addition || ''}`
+      return houseNumberWithAddition.length <= 8
+    },
+    {
+      message: 'House number (including addition if present) must not exceed 8 characters',
+      path: ['shippingAddress.houseNumber'],
+    }
+  )
 
-const validateDob = (dob: string) => {
-  const birthDate = new Date(dob)
-  const today = new Date()
-  let age = today.getFullYear() - birthDate.getFullYear()
-  const monthDiff = today.getMonth() - birthDate.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--
-  }
-  return age >= 18
-}
-
-const validateHouseNumber = (houseNumber: string, addition: string = '') => {
-  const trimmedHouse = houseNumber.trim()
-  const trimmedAddition = addition.trim()
-  if (trimmedAddition) {
-    return trimmedHouse.length + trimmedAddition.length + 1 <= 8
-  }
-  return trimmedHouse.length <= 8
-}
-
-const validateHouseNumberHasNumber = (houseNumber: string) => {
-  return /\d/.test(houseNumber)
-}
-
-const validatePostalCode = (postalCode: string, country: string) => {
-  const postalCodePatterns: { [key: string]: RegExp } = {
-    NL: /^[1-9][0-9]{3}\s?[A-Z]{2}$/,
-    BE: /^[1-9]{1}[0-9]{3}$/,
-    DE: /^[0-9]{5}$/,
-  }
-  return postalCodePatterns[country].test(postalCode)
-}
-
-const validateIBAN = (iban: string) => {
-  // This is a basic IBAN validation. For a more comprehensive check, consider using a library or implementing a full IBAN validation algorithm.
-  const ibanPattern = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/
-  return ibanPattern.test(iban.replace(/\s/g, ''))
-}
+type FormSchema = z.infer<typeof formSchema>
 
 export const ContainerLayout = () => {
   const [showIframe, setShowIframe] = useState(false)
   const [cartItems, setCartItems] = useState<CartStoreItemType[]>([])
-  const { control, handleSubmit, setValue, watch } = useForm<Omit<Components.Schemas.V1CreateTradeInInput, 'items'>>({
+  const { control, handleSubmit, setValue, watch } = useForm<FormSchema>({
     defaultValues: defaultFormData,
-    mode: 'onBlur',
+    resolver: zodResolver(formSchema),
+    mode: 'onChange', // Change this from 'onBlur' to 'onChange'
   })
   const { mutate: createTradeIn } = useCreateTradeIn()
   const [tradeInResult, setTradeInResult] = useState<Components.Schemas.V1CreateTradeInOutput | {}>({})
   const [activeTab, setActiveTab] = useState<'formData' | 'cartData' | 'tradeInResult'>('formData')
-
-  const watchFirstName = watch('shippingAddress.firstName')
-  const watchLastName = watch('shippingAddress.lastName')
-  const watchHouseNumber = watch('shippingAddress.houseNumber')
-  const watchAddition = watch('shippingAddress.addition')
-  const watchCountry = watch('shippingAddress.country')
 
   // Add this effect to watch for form changes
   useEffect(() => {
@@ -151,7 +176,7 @@ export const ContainerLayout = () => {
             setValue(`${key}.${nestedKey}` as any, parsedFormData[key][nestedKey])
           })
         } else {
-          setValue(key as keyof Omit<Components.Schemas.V1CreateTradeInInput, 'items'>, parsedFormData[key])
+          setValue(key as any, parsedFormData[key])
         }
       })
     } else {
@@ -256,7 +281,7 @@ export const ContainerLayout = () => {
           </Button>
           <div className="flex max-w-[918px] gap-8">
             <form onSubmit={handleSubmit(onSubmit)} className="flex gap-8">
-              <div className="flex flex-col gap-4">
+              <div className="flex w-[32rem] flex-none flex-col gap-4">
                 <div className="rounded-lg bg-white p-6 text-black">
                   <h2 className="mb-4 text-xl font-bold">Customer Info</h2>
                   <div className="space-y-4">
@@ -265,10 +290,6 @@ export const ContainerLayout = () => {
                       <Controller
                         name="email"
                         control={control}
-                        rules={{
-                          required: 'Email is required',
-                          pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' },
-                        }}
                         render={({ field, fieldState: { error } }) => (
                           <div className="space-y-2">
                             <label htmlFor={field.name} className="block">
@@ -286,16 +307,6 @@ export const ContainerLayout = () => {
                       <Controller
                         name="dateOfBirth"
                         control={control}
-                        rules={{
-                          required: 'Date of Birth is required',
-                          validate: {
-                            isValid: (value) => !isNaN(Date.parse(value)) || 'Invalid date',
-                            minDate: (value) =>
-                              new Date(value) >= new Date('1920-01-01') || 'Date must be after 1920-01-01',
-                            maxDate: (value) => new Date(value) <= new Date() || 'Date cannot be in the future',
-                            isAdult: (value) => validateDob(value) || 'Must be at least 18 years old',
-                          },
-                        }}
                         render={({ field, fieldState: { error } }) => (
                           <div className="space-y-2">
                             <label htmlFor={field.name} className="block">
@@ -304,6 +315,8 @@ export const ContainerLayout = () => {
                             <input
                               {...field}
                               type="date"
+                              max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
+                              min="1920-01-01"
                               className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                             />
                             {error && <span className="text-sm text-red-500">{error.message}</span>}
@@ -318,15 +331,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.firstName"
                           control={control}
-                          rules={{
-                            required: 'First Name is required',
-                            maxLength: { value: 30, message: 'First Name must be 30 characters or less' },
-                            validate: {
-                              combinedLength: (value) =>
-                                validateNameMaxLength(value, watchLastName) ||
-                                'Combined name length must not exceed 35 characters',
-                            },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -344,15 +348,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.lastName"
                           control={control}
-                          rules={{
-                            required: 'Last Name is required',
-                            maxLength: { value: 30, message: 'Last Name must be 30 characters or less' },
-                            validate: {
-                              combinedLength: (value) =>
-                                validateNameMaxLength(watchFirstName, value) ||
-                                'Combined name length must not exceed 35 characters',
-                            },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -370,7 +365,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.country"
                           control={control}
-                          rules={{ required: 'Country is required' }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -391,14 +385,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.postalCode"
                           control={control}
-                          rules={{
-                            required: 'Postal Code is required',
-                            validate: {
-                              validPostalCode: (value) =>
-                                validatePostalCode(value, watchCountry) ||
-                                'Invalid postal code for the selected country',
-                            },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -416,16 +402,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.houseNumber"
                           control={control}
-                          rules={{
-                            required: 'House Number is required',
-                            validate: {
-                              validHouseNumber: (value) =>
-                                validateHouseNumber(value, watchAddition) ||
-                                'House number (including addition if present) must not exceed 8 characters',
-                              hasNumber: (value) =>
-                                validateHouseNumberHasNumber(value) || 'House number must contain at least one digit',
-                            },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -443,13 +419,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.addition"
                           control={control}
-                          rules={{
-                            validate: {
-                              validCombinedLength: (value) =>
-                                validateHouseNumber(watchHouseNumber, value) ||
-                                'House number (including addition if present) must not exceed 8 characters',
-                            },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -467,10 +436,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.street"
                           control={control}
-                          rules={{
-                            required: 'Street is required',
-                            minLength: { value: 3, message: 'Street must be at least 3 characters long' },
-                          }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -488,7 +453,6 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.city"
                           control={control}
-                          rules={{ required: 'City is required' }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
@@ -527,12 +491,6 @@ export const ContainerLayout = () => {
                             <Controller
                               name="shippingAddress.phoneNumber"
                               control={control}
-                              rules={{
-                                required: 'Phone Number is required',
-                                minLength: { value: 4, message: 'Phone Number must be at least 4 characters long' },
-                                maxLength: { value: 15, message: 'Phone Number must not exceed 15 characters' },
-                                pattern: { value: /^\d+$/, message: 'Phone Number must contain only digits' },
-                              }}
                               render={({ field, fieldState: { error } }) => (
                                 <div className="flex-1">
                                   <input
@@ -553,12 +511,6 @@ export const ContainerLayout = () => {
                     <Controller
                       name="bankAccount.accountNumber"
                       control={control}
-                      rules={{
-                        required: 'IBAN Number is required',
-                        validate: {
-                          validIBAN: (value) => validateIBAN(value) || 'Invalid IBAN number',
-                        },
-                      }}
                       render={({ field, fieldState: { error } }) => (
                         <div className="space-y-2">
                           <label htmlFor={field.name} className="block">
