@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import { debounce } from 'lodash-es'
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import ClickAwayListener from 'react-click-away-listener'
 import { LuCheck } from 'react-icons/lu'
 
 import { Alert, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '~/components'
 import { QuestionComponentProps } from '~/interfaces'
-import { cn, initializeSearchEngine, searchAndFilter } from '~/utils'
+import { cn, searchAndFilter } from '~/utils'
 
 export type ModelPageContentProps = QuestionComponentProps<Components.Schemas.V1GetModelsItemOutput[], string> & {
   onConfirm: () => void
@@ -31,16 +31,12 @@ export const ModelPageContent = ({
     commandInputRef.current?.focus()
   }, [])
 
-  const searchEngine = useMemo(async () => {
-    return await initializeSearchEngine(data)
-  }, [data])
-
   const debouncedSearch = useCallback(
-    debounce(async (searchValue: string) => {
-      const filtered = await searchAndFilter(data, searchValue, await searchEngine)
-      setFilteredData(filtered)
+    debounce((searchValue: string) => {
+      const filtered = searchAndFilter(data, searchValue)
+      setFilteredData(filtered as Components.Schemas.V1GetModelsItemOutput[])
     }, 50),
-    [data, searchEngine]
+    [data]
   )
 
   useEffect(() => {
