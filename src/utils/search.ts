@@ -7,6 +7,7 @@ export const processSearchValue = (searchValue: string): string => {
 const prepareData = (data: Components.Schemas.V1GetModelsItemOutput[]) =>
   data.map((model) => ({
     obj: model,
+    id: model.id,
     name: model.name,
     additionalBrandName: model.additionalBrandName,
   }))

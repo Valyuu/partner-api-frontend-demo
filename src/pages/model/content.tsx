@@ -50,7 +50,9 @@ export const ModelPageContent = ({
 
   const closeList = () => {
     setOpen(false)
-    setValue(modelName)
+    if (modelName) {
+      setValue(modelName)
+    }
   }
 
   const handleInput = ({ target }: ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +71,8 @@ export const ModelPageContent = ({
   }
 
   const handleClick = () => {
-    setValue('')
+    // select all text of the input
+    commandInputRef.current?.select()
     setOpen(true)
   }
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
