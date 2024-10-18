@@ -9,7 +9,7 @@ const Command = forwardRef<ElementRef<typeof CommandPrimitive>, ComponentPropsWi
     <CommandPrimitive
       ref={ref}
       className={cn(
-        'flex h-full w-full flex-col overflow-hidden rounded-lg bg-popover text-popover-foreground border-2 border-input shadow-[rgba(0,0,0,0.12)_0px_0px_2px_0px,_rgba(0,0,0,0.04)_0px_4px_8px_0px]',
+        'flex h-full w-full flex-col overflow-hidden rounded-lg bg-popover text-popover-foreground border border-input shadow-[rgba(0,0,0,0.12)_0px_0px_2px_0px,_rgba(0,0,0,0.04)_0px_4px_8px_0px]',
         className
       )}
       {...props}
@@ -29,7 +29,7 @@ const CommandInput = forwardRef<
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'flex h-14 w-full rounded-md bg-transparent py-4 px-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-14 w-full rounded-md bg-transparent py-4 px-3 text-base font-headline font-bold tracking-wider outline-none placeholder:text-muted-foreground placeholder:font-normal placeholder:text-base disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       {...props}
@@ -66,7 +66,7 @@ const CommandGroup = forwardRef<
   <CommandPrimitive.Group
     ref={ref}
     className={cn(
-      'overflow-hidden p-3 pt-[.875rem] text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground',
+      'overflow-hidden p-3 pt-[.875rem] text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:text-muted-foreground',
       className
     )}
     {...props}
@@ -90,7 +90,7 @@ const CommandItem = forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-lg px-3 py-2.5 font-medium text-base outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50',
+      'relative flex justify-between cursor-default select-none items-center rounded-lg font-headline px-3 py-2.5 font-normal text-base outline-none aria-selected:font-bold aria-selected:tracking-wider aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50',
       className
     )}
     {...props}

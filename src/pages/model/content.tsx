@@ -125,8 +125,8 @@ export const ModelPageContent = ({
                     setOpen(false)
                   }}
                 >
-                  <LuCheck className={cn('mr-2 h-4 w-4', modelId === model.id ? 'opacity-100' : 'opacity-0')} />
                   {model.name}
+                  <LuCheck className={cn('mr-2 h-4 w-4', modelId === model.id ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}
             </CommandGroup>
