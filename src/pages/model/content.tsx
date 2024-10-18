@@ -34,7 +34,7 @@ export const ModelPageContent = ({
   const debouncedSearch = useCallback(
     debounce((searchValue: string) => {
       const filtered = searchAndFilter(data, searchValue)
-      setFilteredData(filtered as Components.Schemas.V1GetModelsItemOutput[])
+      setFilteredData(filtered)
     }, 50),
     [data]
   )
@@ -100,7 +100,7 @@ export const ModelPageContent = ({
       <h2>Welk apparaat is het?</h2>
 
       <ClickAwayListener onClickAway={closeList}>
-        <Command className="w-full">
+        <Command className="w-full" shouldFilter={false}>
           <CommandInput
             ref={commandInputRef}
             placeholder="Zoek apparaatnaam..."
@@ -113,12 +113,12 @@ export const ModelPageContent = ({
             ref={commandListRef}
             className={cn({ hidden: !open || !filteredData.length || (!value.trim() && !modelId) })}
           >
-            <CommandEmpty className="hidden"></CommandEmpty>
+            <CommandEmpty className="hidden" />
             <CommandGroup>
               {filteredData.map((model) => (
                 <CommandItem
                   key={model.id}
-                  value={model.name || ''}
+                  value={model.name}
                   onSelect={(currentValue) => {
                     setValue(currentValue)
                     onSelect(model.id)

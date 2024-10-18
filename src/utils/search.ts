@@ -9,7 +9,7 @@ const prepareData = (data: Components.Schemas.V1GetModelsItemOutput[]) =>
     obj: model,
     id: model.id,
     name: model.name,
-    additionalBrandName: model.additionalBrandName,
+    withBrandName: `${model.additionalBrandName ? `${model.additionalBrandName} ` : ''}${model.name}`.toLowerCase(),
   }))
 
 export const searchAndFilter = (data: Components.Schemas.V1GetModelsItemOutput[], searchValue: string) => {
@@ -21,10 +21,10 @@ export const searchAndFilter = (data: Components.Schemas.V1GetModelsItemOutput[]
   const preparedData = prepareData(data)
 
   const results = fuzzysort.go(processedSearchValue, preparedData, {
-    keys: ['name', 'additionalBrandName'],
+    keys: ['withBrandName'],
     threshold: -10000, // Adjust this value to control the fuzziness
     limit: 30, // Adjust this value to limit the number of results
   })
 
-  return results.map((result) => result.obj)
+  return results.map((result) => result.obj.obj)
 }
