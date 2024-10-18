@@ -1,7 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css'
 
 import devtoolsDetect from 'devtools-detect'
-import { upperFirst } from 'lodash-es'
+import { omit, upperFirst } from 'lodash-es'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TfiClose } from 'react-icons/tfi'
@@ -64,15 +64,66 @@ const jsonViewerProps = {
   },
 }
 
+// Add these custom validation functions
+const validateNameMaxLength = (firstName: string, lastName: string) => {
+  return firstName.trim().length + lastName.trim().length <= 35
+}
+
+const validateDob = (dob: string) => {
+  const birthDate = new Date(dob)
+  const today = new Date()
+  let age = today.getFullYear() - birthDate.getFullYear()
+  const monthDiff = today.getMonth() - birthDate.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--
+  }
+  return age >= 18
+}
+
+const validateHouseNumber = (houseNumber: string, addition: string = '') => {
+  const trimmedHouse = houseNumber.trim()
+  const trimmedAddition = addition.trim()
+  if (trimmedAddition) {
+    return trimmedHouse.length + trimmedAddition.length + 1 <= 8
+  }
+  return trimmedHouse.length <= 8
+}
+
+const validateHouseNumberHasNumber = (houseNumber: string) => {
+  return /\d/.test(houseNumber)
+}
+
+const validatePostalCode = (postalCode: string, country: string) => {
+  const postalCodePatterns: { [key: string]: RegExp } = {
+    NL: /^[1-9][0-9]{3}\s?[A-Z]{2}$/,
+    BE: /^[1-9]{1}[0-9]{3}$/,
+    DE: /^[0-9]{5}$/,
+  }
+  return postalCodePatterns[country].test(postalCode)
+}
+
+const validateIBAN = (iban: string) => {
+  // This is a basic IBAN validation. For a more comprehensive check, consider using a library or implementing a full IBAN validation algorithm.
+  const ibanPattern = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/
+  return ibanPattern.test(iban.replace(/\s/g, ''))
+}
+
 export const ContainerLayout = () => {
   const [showIframe, setShowIframe] = useState(false)
   const [cartItems, setCartItems] = useState<CartStoreItemType[]>([])
   const { control, handleSubmit, setValue, watch } = useForm<Omit<Components.Schemas.V1CreateTradeInInput, 'items'>>({
     defaultValues: defaultFormData,
+    mode: 'onBlur',
   })
   const { mutate: createTradeIn } = useCreateTradeIn()
   const [tradeInResult, setTradeInResult] = useState<Components.Schemas.V1CreateTradeInOutput | {}>({})
   const [activeTab, setActiveTab] = useState<'formData' | 'cartData' | 'tradeInResult'>('formData')
+
+  const watchFirstName = watch('shippingAddress.firstName')
+  const watchLastName = watch('shippingAddress.lastName')
+  const watchHouseNumber = watch('shippingAddress.houseNumber')
+  const watchAddition = watch('shippingAddress.addition')
+  const watchCountry = watch('shippingAddress.country')
 
   // Add this effect to watch for form changes
   useEffect(() => {
@@ -117,7 +168,10 @@ export const ContainerLayout = () => {
     console.log('Form data submitted:', data)
 
     createTradeIn(
-      { ...data, items: cartItems.map((item) => item.data) },
+      {
+        ...(data.paymentType === 'BANK_TRANSFER' ? data : omit(data, 'bankAccount')),
+        items: cartItems.map((item) => item.data),
+      },
       {
         onSuccess: (result) => {
           console.log('Trade-In created successfully:', result)
@@ -232,7 +286,16 @@ export const ContainerLayout = () => {
                       <Controller
                         name="dateOfBirth"
                         control={control}
-                        rules={{ required: 'Date of Birth is required' }}
+                        rules={{
+                          required: 'Date of Birth is required',
+                          validate: {
+                            isValid: (value) => !isNaN(Date.parse(value)) || 'Invalid date',
+                            minDate: (value) =>
+                              new Date(value) >= new Date('1920-01-01') || 'Date must be after 1920-01-01',
+                            maxDate: (value) => new Date(value) <= new Date() || 'Date cannot be in the future',
+                            isAdult: (value) => validateDob(value) || 'Must be at least 18 years old',
+                          },
+                        }}
                         render={({ field, fieldState: { error } }) => (
                           <div className="space-y-2">
                             <label htmlFor={field.name} className="block">
@@ -252,11 +315,19 @@ export const ContainerLayout = () => {
                     {/* Shipping Address */}
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-4">
-                        {/* Update all input fields to use Controller */}
                         <Controller
                           name="shippingAddress.firstName"
                           control={control}
-                          render={({ field }) => (
+                          rules={{
+                            required: 'First Name is required',
+                            maxLength: { value: 30, message: 'First Name must be 30 characters or less' },
+                            validate: {
+                              combinedLength: (value) =>
+                                validateNameMaxLength(value, watchLastName) ||
+                                'Combined name length must not exceed 35 characters',
+                            },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 First Name
@@ -266,13 +337,23 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
                         <Controller
                           name="shippingAddress.lastName"
                           control={control}
-                          render={({ field }) => (
+                          rules={{
+                            required: 'Last Name is required',
+                            maxLength: { value: 30, message: 'Last Name must be 30 characters or less' },
+                            validate: {
+                              combinedLength: (value) =>
+                                validateNameMaxLength(watchFirstName, value) ||
+                                'Combined name length must not exceed 35 characters',
+                            },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 Last Name
@@ -282,13 +363,15 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
                         <Controller
                           name="shippingAddress.country"
                           control={control}
-                          render={({ field }) => (
+                          rules={{ required: 'Country is required' }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 Country
@@ -300,8 +383,8 @@ export const ContainerLayout = () => {
                                 <option value="NL">Netherlands</option>
                                 <option value="BE">Belgium</option>
                                 <option value="DE">Germany</option>
-                                {/* Add more countries as needed */}
                               </select>
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
@@ -310,7 +393,11 @@ export const ContainerLayout = () => {
                           control={control}
                           rules={{
                             required: 'Postal Code is required',
-                            pattern: { value: /^[0-9]{4}\s?[A-Z]{2}$/, message: 'Invalid postal code format' },
+                            validate: {
+                              validPostalCode: (value) =>
+                                validatePostalCode(value, watchCountry) ||
+                                'Invalid postal code for the selected country',
+                            },
                           }}
                           render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
@@ -329,7 +416,17 @@ export const ContainerLayout = () => {
                         <Controller
                           name="shippingAddress.houseNumber"
                           control={control}
-                          render={({ field }) => (
+                          rules={{
+                            required: 'House Number is required',
+                            validate: {
+                              validHouseNumber: (value) =>
+                                validateHouseNumber(value, watchAddition) ||
+                                'House number (including addition if present) must not exceed 8 characters',
+                              hasNumber: (value) =>
+                                validateHouseNumberHasNumber(value) || 'House number must contain at least one digit',
+                            },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 House Number
@@ -339,13 +436,21 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
                         <Controller
                           name="shippingAddress.addition"
                           control={control}
-                          render={({ field }) => (
+                          rules={{
+                            validate: {
+                              validCombinedLength: (value) =>
+                                validateHouseNumber(watchHouseNumber, value) ||
+                                'House number (including addition if present) must not exceed 8 characters',
+                            },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 Addition
@@ -355,13 +460,18 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
                         <Controller
                           name="shippingAddress.street"
                           control={control}
-                          render={({ field }) => (
+                          rules={{
+                            required: 'Street is required',
+                            minLength: { value: 3, message: 'Street must be at least 3 characters long' },
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 Street
@@ -371,13 +481,15 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
                         <Controller
                           name="shippingAddress.city"
                           control={control}
-                          render={({ field }) => (
+                          rules={{ required: 'City is required' }}
+                          render={({ field, fieldState: { error } }) => (
                             <div className="space-y-1">
                               <label htmlFor={field.name} className="block">
                                 City
@@ -387,6 +499,7 @@ export const ContainerLayout = () => {
                                 type="text"
                                 className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
                               />
+                              {error && <span className="text-sm text-red-500">{error.message}</span>}
                             </div>
                           )}
                         />
@@ -414,12 +527,21 @@ export const ContainerLayout = () => {
                             <Controller
                               name="shippingAddress.phoneNumber"
                               control={control}
-                              render={({ field }) => (
-                                <input
-                                  {...field}
-                                  type="text"
-                                  className="flex-1 rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
-                                />
+                              rules={{
+                                required: 'Phone Number is required',
+                                minLength: { value: 4, message: 'Phone Number must be at least 4 characters long' },
+                                maxLength: { value: 15, message: 'Phone Number must not exceed 15 characters' },
+                                pattern: { value: /^\d+$/, message: 'Phone Number must contain only digits' },
+                              }}
+                              render={({ field, fieldState: { error } }) => (
+                                <div className="flex-1">
+                                  <input
+                                    {...field}
+                                    type="tel"
+                                    className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                  />
+                                  {error && <span className="text-sm text-red-500">{error.message}</span>}
+                                </div>
                               )}
                             />
                           </div>
@@ -431,7 +553,13 @@ export const ContainerLayout = () => {
                     <Controller
                       name="bankAccount.accountNumber"
                       control={control}
-                      render={({ field }) => (
+                      rules={{
+                        required: 'IBAN Number is required',
+                        validate: {
+                          validIBAN: (value) => validateIBAN(value) || 'Invalid IBAN number',
+                        },
+                      }}
+                      render={({ field, fieldState: { error } }) => (
                         <div className="space-y-2">
                           <label htmlFor={field.name} className="block">
                             IBAN Number
@@ -442,6 +570,7 @@ export const ContainerLayout = () => {
                             className="w-full rounded border px-3 py-2 focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-300 disabled:bg-gray-100 disabled:text-gray-400"
                             disabled={watch('paymentType') !== 'BANK_TRANSFER'}
                           />
+                          {error && <span className="text-sm text-red-500">{error.message}</span>}
                         </div>
                       )}
                     />
