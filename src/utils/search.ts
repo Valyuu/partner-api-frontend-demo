@@ -23,7 +23,7 @@ export const searchAndFilter = (data: Components.Schemas.V1GetModelsItemOutput[]
   const results = fuzzysort.go(processedSearchValue, preparedData, {
     keys: ['withBrandName'],
     threshold: -10000, // Adjust this value to control the fuzziness
-    limit: 30, // Adjust this value to limit the number of results
+    limit: 10, // Adjust this value to limit the number of results
   })
 
   return results.map((result) => result.obj.obj)
