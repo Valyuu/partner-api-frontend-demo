@@ -31,7 +31,7 @@ const textArt = `\x1b[38;2;50;50;251m
 \x1b[0m`
 
 const defaultFormData: Omit<Components.Schemas.V1CreateTradeInInput, 'items'> = {
-  email: 'hello@valyuu.com',
+  email: 'user@example.com',
   dateOfBirth: '1980-01-01',
   shippingAddress: {
     firstName: 'John',
@@ -106,6 +106,7 @@ const formSchema = z
         }),
     }),
     paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK']),
+    sendCustomerEmail: z.boolean().optional(),
   })
   .refine(
     (data) => {
@@ -551,6 +552,25 @@ export const ContainerLayout = () => {
                           />
                         ))}
                       </div>
+                    </div>
+
+                    {/* Send Customer Email */}
+                    <div className="space-y-2">
+                      <label className="inline-flex items-center">
+                        <Controller
+                          name="sendCustomerEmail"
+                          control={control}
+                          render={({ field }) => (
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              checked={field.value ?? false}
+                              onChange={({ target: { checked } }) => field.onChange(checked)}
+                            />
+                          )}
+                        />
+                        Send Customer Email
+                      </label>
                     </div>
                   </div>
                 </div>
