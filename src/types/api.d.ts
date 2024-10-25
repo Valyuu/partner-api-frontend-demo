@@ -104,10 +104,6 @@ declare namespace Components {
         accountNumber: string
       }
       partnerPlatform?: /* Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED */ PartnerPlatform
-      /**
-       * If it's set to true, Valyuu will send the seller an email. Defaults to false
-       */
-      sendCustomerEmail?: boolean
     }
     export interface V1CreateTradeInItemInput {
       /**

@@ -106,7 +106,6 @@ const formSchema = z
         }),
     }),
     paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK']),
-    sendCustomerEmail: z.boolean().optional(),
   })
   .refine(
     (data) => {
@@ -552,25 +551,6 @@ export const ContainerLayout = () => {
                           />
                         ))}
                       </div>
-                    </div>
-
-                    {/* Send Customer Email */}
-                    <div className="space-y-2">
-                      <label className="inline-flex items-center">
-                        <Controller
-                          name="sendCustomerEmail"
-                          control={control}
-                          render={({ field }) => (
-                            <input
-                              type="checkbox"
-                              className="mr-2"
-                              checked={field.value ?? false}
-                              onChange={({ target: { checked } }) => field.onChange(checked)}
-                            />
-                          )}
-                        />
-                        Send Customer Email
-                      </label>
                     </div>
                   </div>
                 </div>
