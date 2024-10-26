@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@eslint/json": "^0.5.0",
     "@hookform/resolvers": "^3.9.0",
     "@ladle/react": "^4.1.2",
     "@types/lodash-es": "^4.17.12",
