@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   const env = z
     .object({
       API_BASE_URL: z.string().url(),
-      API_AUTH_KEY: z.string(),
+      API_AUTH_KEY: z.string().uuid(),
       ALLOWED_CATEGORIES: z.string().refine(
         (val) => {
           try {
