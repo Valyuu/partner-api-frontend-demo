@@ -1,0 +1,34 @@
+{
+  // Editor settings
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false,
+  
+  // TypeScript settings
+  "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui/react-*"],
+
+  // ESLint settings
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit",
+    "source.addMissingImports": "always"
+  },
+  
+  // Tailwind CSS settings
+  "tailwindCSS.classAttributes": ["class", "className"],
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["clsx\\(.*?\\)(?!\\])", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "['`\"]([^'`\"]*)['`\"]"],
+    ["className={cn\\(([^)]*)\\)}", "['`\"]([^'`\"]*)['`\"]"]
+  ],
+  
+  // Search settings
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.turbo": true,
+    "**/.next": true
+  }
+}
