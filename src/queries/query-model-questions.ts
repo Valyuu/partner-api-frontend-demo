@@ -28,7 +28,7 @@ export const useModelQuestions = ({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authKey,
+          'X-Api-Key': authKey,
         },
       })
 

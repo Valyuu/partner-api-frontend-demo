@@ -12,7 +12,7 @@ const useCreateTradeIn = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authKey,
+          'X-Api-Key': authKey,
         },
         body: JSON.stringify({ ...tradeInData, partnerPlatform: 'EMBEDDED' }),
       })

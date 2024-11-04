@@ -30,7 +30,7 @@ export const useBrands = ({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authKey,
+          'X-Api-Key': authKey,
         },
       })
 
