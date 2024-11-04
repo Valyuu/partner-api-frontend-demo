@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash-es'
+
 import { createPersistedStore } from '~/utils'
 
 export const CART_STORE_KEY = 'valyuu_cartStore'
@@ -32,4 +34,4 @@ export type CartStoreItemType = {
 
 export const CART_STORE_DEFAULT: CartStoreItemType[] = []
 
-export const cartStore = createPersistedStore<CartStoreItemType[]>(CART_STORE_KEY, CART_STORE_DEFAULT)
+export const cartStore = createPersistedStore<CartStoreItemType[]>(CART_STORE_KEY, cloneDeep(CART_STORE_DEFAULT))

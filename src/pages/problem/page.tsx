@@ -90,7 +90,7 @@ export const ProblemPage: FC = () => {
         },
       },
     })
-  }, [currentValue])
+  }, [currentValue, isFunctional, problemResults?.length])
 
   if (isLoading) {
     return <Loading />
