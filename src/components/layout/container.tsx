@@ -262,7 +262,7 @@ export const ContainerLayout = () => {
   }
 
   return (
-    <main className="relative flex h-screen w-screen items-center justify-center bg-[#4C4C4C] p-6 text-base text-white">
+    <main className="relative flex min-h-screen w-screen items-center justify-center overflow-y-auto bg-[#4C4C4C] p-6 text-base text-white">
       {showIframe ? (
         <div className="relative h-[40.9375rem] w-[47.5rem] overflow-hidden rounded-3xl bg-white">
           <iframe key={showIframe ? 'show' : 'hide'} src="/" className="size-full bg-transparent" />
@@ -275,7 +275,7 @@ export const ContainerLayout = () => {
           </Button>
         </div>
       ) : (
-        <div className="flex max-h-full w-[54rem] flex-col gap-8 overflow-y-auto">
+        <div className="flex max-h-full w-[54rem] flex-col gap-8">
           <Button onClick={() => setShowIframe(true)} className="self-center">
             Open Trade-In
           </Button>
