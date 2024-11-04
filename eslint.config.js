@@ -1,5 +1,5 @@
 import jsEslint from '@eslint/js'
-import eslintJson from '@eslint/json'
+import jsonEslint from '@eslint/json'
 import prettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -10,7 +10,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   jsEslint.configs.recommended,
-  eslintJson.configs.recommended,
+  jsonEslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...tailwindcss.configs['flat/recommended'],
   {

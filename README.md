@@ -11,7 +11,7 @@ Technology stack: React, TypeScript, Vite, TailwindCSS, Shadcn UI, React Query, 
 3. Create a `.env` file and fill it with the content below:
 ```
 # Replace with your API base URL
-API_BASE_URL=https:/api-staging.valyuu.tech/partner
+API_BASE_URL=https://api-staging.valyuu.tech/partner
 
 # Replace with your API authentication key
 API_AUTH_KEY=22831168-cc5b-4b98-ba23-45a616bad65b

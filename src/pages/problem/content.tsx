@@ -80,7 +80,7 @@ export const ProblemPageContent = ({ data, currentValue, onSelect }: ProblemPage
       </ToggleGroup>
       {isNil(isFunctional) || isFunctional ? (
         <>
-          <h4 className="text-base font-semibold">Controleer of alles werkt</h4>
+          <h4 className="text-base font-medium">Controleer of alles werkt</h4>
           <div className="flex flex-col gap-4">
             {data.map((item) => (
               <div key={item.id} className="flex gap-1">
@@ -95,13 +95,13 @@ export const ProblemPageContent = ({ data, currentValue, onSelect }: ProblemPage
         </>
       ) : (
         <>
-          <h4 className="text-base font-semibold">Selecteer problemen</h4>
+          <h4 className="text-base font-medium">Selecteer problemen</h4>
           <div className="grid grid-cols-2 gap-2">
             {data.slice(0, expandProblems ? data.length : 6).map((option) => (
               <Label
                 key={option.id}
                 htmlFor={option.id}
-                className="button-shadow flex h-14 cursor-pointer items-center gap-2 rounded-lg border-2 bg-white px-6 font-semibold transition-all hover:border-[#88919e]"
+                className="button-shadow box-border flex min-h-[4.375rem] cursor-pointer items-center gap-2 rounded-lg border bg-white p-4 font-semibold hover:border-[#88919e]"
               >
                 <Checkbox
                   id={option.id}
@@ -117,7 +117,7 @@ export const ProblemPageContent = ({ data, currentValue, onSelect }: ProblemPage
                   }}
                   className="flex-none"
                 />
-                <div className="max-w-[15.625rem] flex-1 break-words leading-4">{option.name}</div>
+                <div className="max-w-[15.625rem] flex-1 break-words leading-5">{option.name}</div>
               </Label>
             ))}
           </div>

@@ -54,7 +54,7 @@ export const SummaryPageContent = () => {
           ))}
           <Button
             variant="secondary"
-            className="button-shadow flex w-full items-center gap-2 self-center border border-[#c9d7df] font-headline text-base font-normal hover:scale-100 hover:border-[#88919e]"
+            className="button-shadow flex w-full items-center gap-2 self-center border border-[#eaf0f4] font-headline text-base font-normal hover:scale-100 hover:border-[#88919e]"
             onClick={() => {
               navigate('/' + NavigationDestination.Category)
             }}
@@ -63,7 +63,7 @@ export const SummaryPageContent = () => {
           </Button>
           {cartItems.length ? (
             <div className="inline-flex items-start justify-between pt-5 font-headline">
-              <div className="text-2xl font-medium leading-normal">Totale waarde:</div>
+              <div className="text-2xl font-bold leading-normal">Totale waarde:</div>
               <div className="inline-flex flex-col items-end justify-start gap-[.4375rem]">
                 <Price price={cartTotal} />
                 <div className="font-headline text-sm font-bold leading-normal text-[#009de8]">
@@ -74,7 +74,7 @@ export const SummaryPageContent = () => {
           ) : null}
           <Separator className="mt-2.5" />
           <div ref={tocRef} className="flex flex-col gap-2">
-            <div className="font-headline text-[1.25rem] font-medium">Voorwaarden</div>
+            <div className="font-headline text-[1.25rem] font-bold">Voorwaarden</div>
             <div className="group flex items-start gap-3 leading-6">
               <Checkbox
                 id="checkbox-data-forward"

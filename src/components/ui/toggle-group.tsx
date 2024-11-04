@@ -30,12 +30,12 @@ ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName
 
 // Define the variants for the ToggleGroupItem
 const toggleGroupItemVariants = cva(
-  'data-[state=off]:button-shadow group inline-flex w-full items-center justify-center !rounded-xl border-2 text-base font-semibold ring-offset-background data-[state=on]:border-[3px] data-[state=off]:border-[#dddddd] data-[state=on]:border-[#009de8] data-[state=on]:p-[23px] hover:border-[#88919e] hover:data-[state=on]:border-[#009de8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50',
+  'data-[state=off]:button-shadow group box-border inline-flex w-full items-center justify-center !rounded-xl border text-base font-semibold ring-offset-background data-[state=on]:border-[3px] data-[state=off]:border-[#eaf0f4] data-[state=on]:border-[#009de8] data-[state=on]:p-[23px] hover:border-[#88919e] hover:data-[state=on]:border-[#009de8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       radio: {
         false: 'p-6',
-        true: '!rounded-lg p-4 data-[state=on]:p-[15px]',
+        true: 'min-h-[70px] !rounded-lg p-4 data-[state=on]:p-[.875rem]',
       },
     },
     defaultVariants: {
@@ -73,7 +73,7 @@ const ToggleGroupItem = forwardRef<
     >
       {radio ? (
         <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex aspect-square size-5 flex-none items-center justify-center rounded-full border-2 border-[#c9d7df] text-[#c9d7df] group-data-[state=on]:border-[#009de8] group-data-[state=on]:text-[#009de8]">
+          <div className="mt-px flex aspect-square size-5 flex-none items-center justify-center rounded-full border-2 border-[#c9d7df] text-[#c9d7df] group-data-[state=on]:border-[#009de8] group-data-[state=on]:text-[#009de8]">
             <LuCircle className="size-3 fill-current text-current group-data-[state=off]:invisible" />
           </div>
           {children}

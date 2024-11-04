@@ -4,6 +4,7 @@ import { Alert, ToggleGroup, ToggleGroupItem } from '~/components'
 import { NavigationDestination } from '~/constants'
 import { QuestionComponentProps } from '~/interfaces'
 import { QuestionResultsStoreType } from '~/stores'
+import { cn } from '~/utils'
 
 export type ConditionPageContentProps = QuestionComponentProps<
   Components.Schemas.V1GetModelQuestionsConditionQuestionsItemOutput,
@@ -47,9 +48,9 @@ export const ConditionPageContent = ({ data, currentValue, onSelect }: Condition
             radio
           >
             <div>
-              <strong className="text-lg font-semibold">{option.name}</strong>
+              <span className={cn('text-lg', { 'font-semibold': option.description })}>{option.name}</span>
               {option.description ? (
-                <ul className="-ml-3 list-disc pl-7 text-base font-normal text-[#6a7180]">
+                <ul className="-ml-3 mt-2 list-disc pl-7 text-base font-normal text-[#6a7180]">
                   {option.description
                     .split('. ')
                     .filter((line) => line?.trim())

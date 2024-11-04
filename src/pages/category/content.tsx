@@ -27,13 +27,17 @@ export const CategoryPageContent = ({ data, currentValue, onSelect }: CategoryPa
         className="grid grid-cols-2 gap-[1.625rem] sm:grid-cols-3"
       >
         {data.map((category) => (
-          <ToggleGroupItem key={category.id} value={category.id} className="flex flex-col justify-center gap-2.5">
+          <ToggleGroupItem
+            key={category.id}
+            value={category.id}
+            className="flex flex-col justify-center gap-2.5 font-medium data-[state=on]:font-semibold"
+          >
             <img
               src={category.image}
               alt={category.name}
               className="mt-2 size-[4.375rem] max-h-full max-w-full object-contain"
             />
-            <span className="mb-2 text-center text-base font-medium">{category.name}</span>
+            <span className="mb-2 text-center text-base">{category.name}</span>
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

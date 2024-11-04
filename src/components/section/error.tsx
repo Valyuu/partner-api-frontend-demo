@@ -1,1 +1,3 @@
-export const Error = () => <div className="text-center text-red-500">Fout bij het laden van categorieën</div>
+export const Error = () => (
+  <div className="text-center text-red-500">Er is een fout opgetreden bij het laden van de gegevens</div>
+)

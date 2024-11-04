@@ -16,7 +16,7 @@ const CircleDiv = ({ number, withDots }: CircleDivProps) => (
         withDots,
     })}
   >
-    <div className="flex size-16 items-center justify-center rounded-full border-4 border-[#009de8] bg-white text-center font-headline text-[1.25rem] font-bold text-[#009de8]">
+    <div className="flex size-16 items-center justify-center rounded-full border-4 border-[#009de8] bg-white text-center font-headline text-[1.25rem] font-bold tracking-wider text-[#009de8]">
       {number}
     </div>
   </div>
@@ -39,11 +39,11 @@ export const SuccessPageContent = () => {
         <img src={thankYouImg} alt="Thank you" className="size-[7.625rem] flex-none" />
       </div>
       <div className="mt-[1.875rem] flex flex-col gap-6">
-        <h2 className="font-headline text-2xl font-bold leading-[2.1rem]">Wat nu?</h2>
+        <h2 className="font-headline text-2xl font-bold leading-[2.1rem] tracking-wider">Wat nu?</h2>
         <div className="flex gap-[1.4375rem]">
           <CircleDiv number={1} withDots />
           <div>
-            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 text-[#009de8]">
+            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 tracking-wider text-[#009de8]">
               Bereid je pakket voor
             </h3>
             <div className="leading-5">
@@ -56,7 +56,7 @@ export const SuccessPageContent = () => {
         <div className="flex gap-[1.4375rem]">
           <CircleDiv number={2} withDots />
           <div>
-            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 text-[#009de8]">
+            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 tracking-wider text-[#009de8]">
               Stuur het pakket op
             </h3>
             <div className="leading-5">
@@ -71,7 +71,7 @@ export const SuccessPageContent = () => {
         <div className="flex gap-[1.4375rem]">
           <CircleDiv number={3} />
           <div>
-            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 text-[#009de8]">
+            <h3 className="mb-3 mt-4 font-headline text-xl font-bold not-italic leading-7 tracking-wider text-[#009de8]">
               Krijg snel betaald
             </h3>
             <div className="leading-5">

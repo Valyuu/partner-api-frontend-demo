@@ -23,13 +23,13 @@ const CartItem = forwardRef<HTMLDivElement, CartItemProps>(
     const navigate = useNavigate()
 
     return (
-      <Card ref={ref} className={cn('w-full border border-[#c9d7df] button-shadow', className)} {...props}>
-        <CardContent className="relative flex min-h-28 gap-3 px-5 py-4">
+      <Card ref={ref} className={cn('w-full border border-[#eaf0f4] button-shadow', className)} {...props}>
+        <CardContent className="relative flex min-h-28 gap-3 rounded-[8px] px-5 py-4">
           <div className="flex grow items-center justify-between">
             <div className="flex items-start gap-4">
               <img alt={name} src={image} className="h-auto max-h-12 w-12 flex-none self-center" />
               <div>
-                <h2 className="font-headline text-[1.125rem] font-bold leading-6">{name}</h2>
+                <h2 className="font-headline text-[1.125rem] font-bold leading-6 tracking-wider">{name}</h2>
                 {attributes.map((attribute) => (
                   <p className="flex gap-1 text-base" key={attribute}>
                     <LuCheck className="mt-[5px] size-4 flex-none" />

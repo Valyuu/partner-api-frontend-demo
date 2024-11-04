@@ -1,1 +1,1 @@
-export const Loading = () => <div className="text-center">Categorieën laden...</div>
+export const Loading = () => <div className="text-center">Pagina wordt geladen...</div>
