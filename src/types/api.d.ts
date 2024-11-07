@@ -1,24 +1,9 @@
 declare namespace Components {
   namespace Schemas {
-    /**
-     * Faq collection
-     */
     export type FaqCollectionType = 'SELLER_PLAN' | 'SELLER_MAIN' | 'BUYER_MAIN'
-    /**
-     * Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED
-     */
     export type PartnerPlatform = 'STANDALONE' | 'EMBEDDED'
-    /**
-     * The time unit for the payment time
-     */
     export type PaymentTimeUnit = 'HOURS' | 'DAYS'
-    /**
-     * Payment type, defaults to BANK_TRANSFER
-     */
-    export type SalePaymentType = 'BANK_TRANSFER' | 'DONATION' | 'PARTNER_WEBHOOK'
-    /**
-     * Language code. Defaults to "nl"
-     */
+    export type SalePaymentType = 'BANK_TRANSFER' | 'DONATION' | 'BULK_SETTLEMENT'
     export type SupportedLangues = 'en' | 'nl' | 'de'
     export interface V1CreateTradeInBankAccountInput {
       /**
@@ -31,7 +16,10 @@ declare namespace Components {
       accountNumber: string
     }
     export interface V1CreateTradeInInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Email of the seller
        */
@@ -89,7 +77,10 @@ declare namespace Components {
        * List of items to be sold
        */
       items: V1CreateTradeInItemInput[]
-      paymentType?: /* Payment type, defaults to BANK_TRANSFER */ SalePaymentType
+      /**
+       * Payment type, defaults to BANK_TRANSFER
+       */
+      paymentType?: 'BANK_TRANSFER' | 'DONATION' | 'BULK_SETTLEMENT'
       /**
        * Bank account information of the seller. Only required if paymentType is set to BANK_TRANSFER
        */
@@ -103,7 +94,10 @@ declare namespace Components {
          */
         accountNumber: string
       }
-      partnerPlatform?: /* Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED */ PartnerPlatform
+      /**
+       * Partner's platform type: standalone sub-site or embedded solution. Defaults to EMBEDDED
+       */
+      partnerPlatform?: 'STANDALONE' | 'EMBEDDED'
     }
     export interface V1CreateTradeInItemInput {
       /**
@@ -188,7 +182,10 @@ declare namespace Components {
       phoneNumber: string
     }
     export interface V1GetBrandsInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Category ID to filter brands
        */
@@ -209,7 +206,10 @@ declare namespace Components {
       image: string
     }
     export interface V1GetCategoriesInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
     }
     export interface V1GetCategoriesItemOutput {
       /**
@@ -230,8 +230,14 @@ declare namespace Components {
       image: string
     }
     export interface V1GetFaqsInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
-      collection: /* Faq collection */ FaqCollectionType
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
+      /**
+       * Faq collection
+       */
+      collection: 'SELLER_PLAN' | 'SELLER_MAIN' | 'BUYER_MAIN'
     }
     export interface V1GetFaqsItemOutput {
       /**
@@ -340,7 +346,10 @@ declare namespace Components {
       percentOfChoice?: number
     }
     export interface V1GetModelQuestionsInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Model ID to filter questions
        */
@@ -409,7 +418,10 @@ declare namespace Components {
       description?: string
     }
     export interface V1GetModelsInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Category ID to filter models
        */
@@ -442,7 +454,10 @@ declare namespace Components {
       image: string
     }
     export interface V1GetSeriesInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Category ID to filter series
        */
@@ -493,7 +508,10 @@ declare namespace Components {
       savedEwaste: number
     }
     export interface V1GetTradeInItemDataInput {
-      lang?: /* Language code. Defaults to "nl" */ SupportedLangues
+      /**
+       * Language code. Defaults to "nl"
+       */
+      lang?: 'en' | 'nl' | 'de'
       /**
        * Indicates if the product is functional
        */
@@ -587,7 +605,10 @@ declare namespace Components {
        * The maximum number of time units before payment is made
        */
       maxPaymentTime: number
-      paymentTimeUnit: /* The time unit for the payment time */ PaymentTimeUnit
+      /**
+       * The time unit for the payment time
+       */
+      paymentTimeUnit: 'HOURS' | 'DAYS'
     }
     export interface V1WrappedCreateTradeInOutput {
       /**
@@ -841,7 +862,7 @@ declare namespace Paths {
   namespace V1ControllerGetBrands {
     namespace Parameters {
       export type CategoryId = string
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Lang = Components.Schemas.SupportedLangues
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
@@ -853,7 +874,7 @@ declare namespace Paths {
   }
   namespace V1ControllerGetCategories {
     namespace Parameters {
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Lang = Components.Schemas.SupportedLangues
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
@@ -864,8 +885,8 @@ declare namespace Paths {
   }
   namespace V1ControllerGetFaqs {
     namespace Parameters {
-      export type Collection = /* Faq collection */ Components.Schemas.FaqCollectionType
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Collection = Components.Schemas.FaqCollectionType
+      export type Lang = Components.Schemas.SupportedLangues
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
@@ -877,7 +898,7 @@ declare namespace Paths {
   }
   namespace V1ControllerGetModelQuestions {
     namespace Parameters {
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Lang = Components.Schemas.SupportedLangues
       export type ModelId = string
     }
     export interface QueryParameters {
@@ -892,7 +913,7 @@ declare namespace Paths {
     namespace Parameters {
       export type BrandId = string
       export type CategoryId = string
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Lang = Components.Schemas.SupportedLangues
       export type OnlyShowEligible = boolean
     }
     export interface QueryParameters {
@@ -909,7 +930,7 @@ declare namespace Paths {
     namespace Parameters {
       export type BrandId = string
       export type CategoryId = string
-      export type Lang = /* Language code. Defaults to "nl" */ Components.Schemas.SupportedLangues
+      export type Lang = Components.Schemas.SupportedLangues
     }
     export interface QueryParameters {
       lang?: Parameters.Lang
@@ -928,6 +949,19 @@ declare namespace Paths {
       tradeInId: Parameters.TradeInId /* uuid */
     }
     namespace Responses {
+      export interface $404 {}
+      export interface $500 {}
+    }
+  }
+  namespace V1ControllerGetShippingQrCode {
+    namespace Parameters {
+      export type TradeInId = string // uuid
+    }
+    export interface PathParameters {
+      tradeInId: Parameters.TradeInId /* uuid */
+    }
+    namespace Responses {
+      export type $200 = string // binary
       export interface $404 {}
       export interface $500 {}
     }

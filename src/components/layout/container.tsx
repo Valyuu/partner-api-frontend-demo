@@ -105,7 +105,7 @@ const formSchema = z
           message: 'Invalid IBAN number',
         }),
     }),
-    paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK']),
+    paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'BULK_SETTLEMENT']),
   })
   .refine(
     (data) => {
@@ -531,7 +531,7 @@ export const ContainerLayout = () => {
                     <div className="space-y-2">
                       <label className="block">Payment Type</label>
                       <div className="flex gap-4">
-                        {['BANK_TRANSFER', 'DONATION', 'PARTNER_WEBHOOK'].map((type) => (
+                        {['BANK_TRANSFER', 'DONATION', 'BULK_SETTLEMENT'].map((type) => (
                           <Controller
                             key={type}
                             name="paymentType"
