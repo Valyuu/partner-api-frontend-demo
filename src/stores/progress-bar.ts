@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash-es'
 import { proxy } from 'valtio'
 
 import { NavigationDestination } from '~/constants'
@@ -9,8 +8,9 @@ export type ProgressBarStoreType = {
   totalSteps: number
 }
 
-export const PROGRESS_BAR_STORE_DEFAULT: ProgressBarStoreType = {
-  currentStep: 0,
+class ProgressBarStore {
+  currentStep = 0
+
   get totalSteps() {
     return (
       questionSectionStore.questionCount[NavigationDestination.Category] /* category */ +
@@ -22,7 +22,7 @@ export const PROGRESS_BAR_STORE_DEFAULT: ProgressBarStoreType = {
         : 0) +
       1 /* summary */
     )
-  },
+  }
 }
 
-export const progressBarStore = proxy<ProgressBarStoreType>(cloneDeep(PROGRESS_BAR_STORE_DEFAULT))
+export const progressBarStore = proxy<ProgressBarStoreType>(new ProgressBarStore())
