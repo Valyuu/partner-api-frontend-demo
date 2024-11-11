@@ -477,7 +477,7 @@ declare namespace Components {
        */
       name: string
     }
-    export interface V1GetTradeInItemDataAttributeItemInput {
+    export interface V1PrepareTradeInItemDataAttributeItemInput {
       /**
        * Unique identifier for the condition
        */
@@ -487,7 +487,7 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
-    export interface V1GetTradeInItemDataConditionItemInput {
+    export interface V1PrepareTradeInItemDataConditionItemInput {
       /**
        * Unique identifier for the condition
        */
@@ -497,17 +497,17 @@ declare namespace Components {
        */
       optionId: string // uuid
     }
-    export interface V1GetTradeInItemDataEcoSavingsOutput {
+    export interface V1PrepareTradeInItemDataEcoSavingsOutput {
       /**
        * CO2 savings of the item, in g
        */
       savedCo2: number
       /**
-       * Raw materials savings of the item, in g
+       * E-waste savings of the item, in g
        */
       savedEwaste: number
     }
-    export interface V1GetTradeInItemDataInput {
+    export interface V1PrepareTradeInItemDataInput {
       /**
        * Language code. Defaults to "nl"
        */
@@ -523,17 +523,17 @@ declare namespace Components {
       /**
        * Model attributes
        */
-      attributes: V1GetTradeInItemDataAttributeItemInput[]
+      attributes: V1PrepareTradeInItemDataAttributeItemInput[]
       /**
        * Conditions of the product if functional
        */
-      conditions: V1GetTradeInItemDataConditionItemInput[]
+      conditions: V1PrepareTradeInItemDataConditionItemInput[]
       /**
        * Problems of the product if not functional
        */
       problems: string /* uuid */[]
     }
-    export interface V1GetTradeInItemDataOutput {
+    export interface V1PrepareTradeInItemDataOutput {
       /**
        * Unique identifier for the variant (used as an input for the API call "createTradeIn")
        */
@@ -569,7 +569,7 @@ declare namespace Components {
       /**
        * All payment plans and prices a user can get, with processing time, currently only C2B is supported. If it's an empty array, then this product is not eligible for trade-in
        */
-      paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
+      paymentPlans: V1PrepareTradeInItemDataPaymentPlanItemOutput[]
       /**
        * Eco savings of the item
        */
@@ -579,12 +579,12 @@ declare namespace Components {
          */
         savedCo2: number
         /**
-         * Raw materials savings of the item, in g
+         * E-waste savings of the item, in g
          */
         savedEwaste: number
       }
     }
-    export interface V1GetTradeInItemDataPaymentPlanItemOutput {
+    export interface V1PrepareTradeInItemDataPaymentPlanItemOutput {
       /**
        * Payment plan, now only C2B is
        */
@@ -782,7 +782,7 @@ declare namespace Components {
        */
       data: V1GetSeriesItemOutput[]
     }
-    export interface V1WrappedGetTradeInItemDataOutput {
+    export interface V1WrappedPrepareTradeInItemDataOutput {
       /**
        * Indicates the success of the operation
        */
@@ -834,7 +834,7 @@ declare namespace Components {
         /**
          * All payment plans and prices a user can get, with processing time, currently only C2B is supported. If it's an empty array, then this product is not eligible for trade-in
          */
-        paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
+        paymentPlans: V1PrepareTradeInItemDataPaymentPlanItemOutput[]
         /**
          * Eco savings of the item
          */
@@ -844,7 +844,7 @@ declare namespace Components {
            */
           savedCo2: number
           /**
-           * Raw materials savings of the item, in g
+           * E-waste savings of the item, in g
            */
           savedEwaste: number
         }
@@ -926,6 +926,23 @@ declare namespace Paths {
       export type $200 = Components.Schemas.V1WrappedGetModelsOutput
     }
   }
+  namespace V1ControllerGetPaperlessCode {
+    namespace Parameters {
+      export type Format = 'PDF' | 'PNG'
+      export type TradeInId = string // uuid
+    }
+    export interface PathParameters {
+      tradeInId: Parameters.TradeInId /* uuid */
+    }
+    export interface QueryParameters {
+      format?: Parameters.Format
+    }
+    namespace Responses {
+      export type $200 = string // binary
+      export interface $404 {}
+      export interface $500 {}
+    }
+  }
   namespace V1ControllerGetSeries {
     namespace Parameters {
       export type BrandId = string
@@ -943,22 +960,14 @@ declare namespace Paths {
   }
   namespace V1ControllerGetShippingLabel {
     namespace Parameters {
+      export type Format = 'PDF' | 'PNG'
       export type TradeInId = string // uuid
     }
     export interface PathParameters {
       tradeInId: Parameters.TradeInId /* uuid */
     }
-    namespace Responses {
-      export interface $404 {}
-      export interface $500 {}
-    }
-  }
-  namespace V1ControllerGetShippingQrCode {
-    namespace Parameters {
-      export type TradeInId = string // uuid
-    }
-    export interface PathParameters {
-      tradeInId: Parameters.TradeInId /* uuid */
+    export interface QueryParameters {
+      format?: Parameters.Format
     }
     namespace Responses {
       export type $200 = string // binary
@@ -966,10 +975,10 @@ declare namespace Paths {
       export interface $500 {}
     }
   }
-  namespace V1ControllerGetTradeInItemData {
-    export type RequestBody = Components.Schemas.V1GetTradeInItemDataInput
+  namespace V1ControllerPrepareTradeInItemData {
+    export type RequestBody = Components.Schemas.V1PrepareTradeInItemDataInput
     namespace Responses {
-      export type $200 = Components.Schemas.V1WrappedGetTradeInItemDataOutput
+      export type $200 = Components.Schemas.V1WrappedPrepareTradeInItemDataOutput
     }
   }
 }

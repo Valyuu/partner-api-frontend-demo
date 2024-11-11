@@ -27,7 +27,7 @@ export const AddToCartPage: FC = () => {
   const { isFunctional } = questionResults
   const { totalSteps } = useSnapshot(progressBarStore)
   const cartItems = useSnapshot(cartStore)
-  const [ineligibleProduct, setIneligibleProduct] = useState<Components.Schemas.V1GetTradeInItemDataOutput>()
+  const [ineligibleProduct, setIneligibleProduct] = useState<Components.Schemas.V1PrepareTradeInItemDataOutput>()
 
   const { data, isLoading, isError } = useTradeInItemData({
     lang: QUERY_LANGUAGE,
