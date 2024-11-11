@@ -1,4 +1,4 @@
-export * from './mutate-trade-in'
+export * from './mutate-create-trade-in'
 export * from './query-brands'
 export * from './query-categories'
 export * from './query-model-questions'

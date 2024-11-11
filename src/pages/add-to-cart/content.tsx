@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 
 import { Alert, CartItem } from '~/components'
 
-export type AddToCartPageContentProps = { data?: Components.Schemas.V1PrepareTradeInItemDataOutput }
+export type AddToCartPageContentProps = { data?: Components.Schemas.V1GetTradeInItemDataOutput }
 
 export const AddToCartPageContent = ({ data }: AddToCartPageContentProps) => {
   if (!data) {
