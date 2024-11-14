@@ -23,6 +23,7 @@ export const ModelPageContent = ({
 
   const [value, setValue] = useState(modelName)
   const [filteredData, setFilteredData] = useState(data)
+  const [highlightedValue, setHighlightedValue] = useState('')
 
   const commandInputRef = useRef<HTMLInputElement>(null)
   const commandListRef = useRef<HTMLDivElement>(null)
@@ -47,6 +48,14 @@ export const ModelPageContent = ({
       debouncedSearch.cancel()
     }
   }, [value, debouncedSearch])
+
+  useEffect(() => {
+    if (value && filteredData.length) {
+      setHighlightedValue(filteredData[0].name)
+    } else {
+      setHighlightedValue('')
+    }
+  }, [value, filteredData])
 
   const closeList = () => {
     setOpen(false)
@@ -100,7 +109,7 @@ export const ModelPageContent = ({
       <h2>Welk apparaat is het?</h2>
 
       <ClickAwayListener onClickAway={closeList}>
-        <Command className="w-full" shouldFilter={false}>
+        <Command className="w-full" shouldFilter={false} value={highlightedValue} onValueChange={setHighlightedValue}>
           <CommandInput
             ref={commandInputRef}
             placeholder="Zoek apparaatnaam..."
