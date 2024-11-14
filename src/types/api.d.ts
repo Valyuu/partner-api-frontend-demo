@@ -3,8 +3,31 @@ declare namespace Components {
     export type FaqCollectionType = 'SELLER_PLAN' | 'SELLER_MAIN' | 'BUYER_MAIN'
     export type PartnerPlatform = 'STANDALONE' | 'EMBEDDED'
     export type PaymentTimeUnit = 'HOURS' | 'DAYS'
-    export type SalePaymentType = 'BANK_TRANSFER' | 'DONATION' | 'BULK_SETTLEMENT'
     export type SupportedLangues = 'en' | 'nl' | 'de'
+    export type TradeInItemOfferConfirmationType = 'ACCEPT' | 'DECLINE_RECYCLE' | 'DECLINE_RETURN'
+    export type TradeInOrderItemOfferStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED'
+    export type TradeInOrderItemStatus =
+      | 'SUBMITTED'
+      | 'RECEIVED'
+      | 'MANUAL_OFFER'
+      | 'PENDING_OFFER'
+      | 'PENDING_PAYMENT'
+      | 'PENDING_RETURN'
+      | 'PENDING_RECYCLE'
+      | 'RETURNED'
+      | 'PAYMENT_IN_PROCESS'
+      | 'PAYMENT_FAILED'
+      | 'NOT_RECEIVED'
+      | 'COMPLETED'
+      | 'UNKNOWN'
+    export type TradeInOrderStatus = 'SUBMITTED' | 'RECEIVED' | 'CANCELLED' | 'COMPLETED'
+    export type TradeInPaymentType = 'BANK_TRANSFER' | 'DONATION' | 'BULK_SETTLEMENT'
+    export interface V1ConfirmTradeInItemOfferInput {
+      /**
+       * Confirmation type
+       */
+      confirmationType: 'ACCEPT' | 'DECLINE_RECYCLE' | 'DECLINE_RETURN'
+    }
     export interface V1CreateTradeInBankAccountInput {
       /**
        * Name of the account holder
@@ -138,6 +161,10 @@ declare namespace Components {
        * Human readable order number associated with the trade-in
        */
       tradeInOrderNumber: string
+      /**
+       * Version number for this trade-in order
+       */
+      version: number
     }
     export interface V1CreateTradeInShippingAddressInput {
       /**
@@ -571,6 +598,10 @@ declare namespace Components {
        */
       paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
       /**
+       * Indicates if the item is eligible for trade-in and has trade-in value
+       */
+      isEligibleForTradeIn: boolean
+      /**
        * Eco savings of the item
        */
       ecoSavings: {
@@ -610,6 +641,146 @@ declare namespace Components {
        */
       paymentTimeUnit: 'HOURS' | 'DAYS'
     }
+    export interface V1TradeInOrderDataOutput {
+      /**
+       * Revision version number of the trade-in
+       */
+      tradeInVersion: number
+      /**
+       * Unique identifier for the trade-in
+       */
+      tradeInId: string // uuid
+      /**
+       * Unique identifier for the user
+       */
+      userId: string // uuid
+      /**
+       * Human readable order number associated with the trade-in
+       */
+      tradeInOrderNumber: string
+      /**
+       * Status of the trade-in
+       */
+      status: 'SUBMITTED' | 'RECEIVED' | 'CANCELLED' | 'COMPLETED'
+      /**
+       * Indicates if the shipping label is paperless
+       */
+      isShippingLabelPaperless: boolean
+      /**
+       * Tracking number of the shipping label
+       */
+      trackingNumber: string
+      /**
+       * Tracking URL of the shipping label
+       */
+      trackingUrl: string
+      /**
+       * List of items in the trade-in. If returnTradeInItems is false, this will be undefined
+       */
+      items: V1TradeInOrderItemDataOutput[]
+    }
+    export interface V1TradeInOrderItemDataOutput {
+      /**
+       * Revision version number of the item
+       */
+      tradeInItemVersion: number
+      /**
+       * Unique identifier for the item
+       */
+      tradeInItemId: string // uuid
+      /**
+       * Status of the item
+       */
+      status:
+        | 'SUBMITTED'
+        | 'RECEIVED'
+        | 'MANUAL_OFFER'
+        | 'PENDING_OFFER'
+        | 'PENDING_PAYMENT'
+        | 'PENDING_RETURN'
+        | 'PENDING_RECYCLE'
+        | 'RETURNED'
+        | 'PAYMENT_IN_PROCESS'
+        | 'PAYMENT_FAILED'
+        | 'NOT_RECEIVED'
+        | 'COMPLETED'
+        | 'UNKNOWN'
+      /**
+       * Offer status of the item
+       */
+      offerStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED'
+      /**
+       * Offer note of the item
+       */
+      offerGradingNote?: string
+      /**
+       * Unique identifier for the variant (used as an input for the API call "createTradeIn")
+       */
+      variantId: string // uuid
+      /**
+       * Indicates if the product is functional (used as an input for the API call "createTradeIn")
+       */
+      isProductFunctional: boolean
+      /**
+       * Product model name (for display purposes only)
+       */
+      name: string
+      /**
+       * Product model image (for display purposes only)
+       */
+      image: string
+      /**
+       * Product model attributes (for display purposes only)
+       */
+      attributes: string[]
+      /**
+       * User's answers (for display purposes only)
+       */
+      answers: string[]
+      /**
+       * Payment plan and prices a user can get, with processing time, currently only C2B is supported
+       */
+      paymentPlan: {
+        /**
+         * Payment plan, now only C2B is
+         */
+        plan: string
+        /**
+         * Currency of the price (for display purposes only)
+         */
+        currency: string
+        /**
+         * Trade-in price in pure number format (for both display and as an input for the API call "createTradeIn")
+         */
+        price: number
+        /**
+         * The minimum number of time units before payment is made
+         */
+        minPaymentTime: number
+        /**
+         * The maximum number of time units before payment is made
+         */
+        maxPaymentTime: number
+        /**
+         * The time unit for the payment time
+         */
+        paymentTimeUnit: 'HOURS' | 'DAYS'
+      }
+    }
+    export interface V1WrappedConfirmTradeInItemOfferOutput {
+      /**
+       * Indicates the success of the operation
+       */
+      success: boolean
+      /**
+       * Error message if the operation fails
+       */
+      message?: string
+      /**
+       * HTTP status code of the operation
+       */
+      statusCode: number
+    }
     export interface V1WrappedCreateTradeInOutput {
       /**
        * Indicates the success of the operation
@@ -639,6 +810,10 @@ declare namespace Components {
          * Human readable order number associated with the trade-in
          */
         tradeInOrderNumber: string
+        /**
+         * Version number for this trade-in order
+         */
+        version: number
       }
     }
     export interface V1WrappedGetBrandsOutput {
@@ -836,6 +1011,10 @@ declare namespace Components {
          */
         paymentPlans: V1GetTradeInItemDataPaymentPlanItemOutput[]
         /**
+         * Indicates if the item is eligible for trade-in and has trade-in value
+         */
+        isEligibleForTradeIn: boolean
+        /**
          * Eco savings of the item
          */
         ecoSavings: {
@@ -850,9 +1029,203 @@ declare namespace Components {
         }
       }
     }
+    export interface V1WrappedGetTradeInOrderDataOutput {
+      /**
+       * Indicates the success of the operation
+       */
+      success: boolean
+      /**
+       * Error message if the operation fails
+       */
+      message?: string
+      /**
+       * HTTP status code of the operation
+       */
+      statusCode: number
+      /**
+       * Indicates if the data has updates since the last version
+       */
+      hasUpdates: boolean
+      /**
+       * Get trade-in order data
+       */
+      data: {
+        /**
+         * Revision version number of the trade-in
+         */
+        tradeInVersion: number
+        /**
+         * Unique identifier for the trade-in
+         */
+        tradeInId: string // uuid
+        /**
+         * Unique identifier for the user
+         */
+        userId: string // uuid
+        /**
+         * Human readable order number associated with the trade-in
+         */
+        tradeInOrderNumber: string
+        /**
+         * Status of the trade-in
+         */
+        status: 'SUBMITTED' | 'RECEIVED' | 'CANCELLED' | 'COMPLETED'
+        /**
+         * Indicates if the shipping label is paperless
+         */
+        isShippingLabelPaperless: boolean
+        /**
+         * Tracking number of the shipping label
+         */
+        trackingNumber: string
+        /**
+         * Tracking URL of the shipping label
+         */
+        trackingUrl: string
+        /**
+         * List of items in the trade-in. If returnTradeInItems is false, this will be undefined
+         */
+        items: V1TradeInOrderItemDataOutput[]
+      }
+    }
+    export interface V1WrappedGetTradeInOrderItemDataOutput {
+      /**
+       * Indicates the success of the operation
+       */
+      success: boolean
+      /**
+       * Error message if the operation fails
+       */
+      message?: string
+      /**
+       * HTTP status code of the operation
+       */
+      statusCode: number
+      /**
+       * Indicates if the data has updates since the last version
+       */
+      hasUpdates: boolean
+      /**
+       * Get trade-in order item data
+       */
+      data: {
+        /**
+         * Revision version number of the item
+         */
+        tradeInItemVersion: number
+        /**
+         * Unique identifier for the item
+         */
+        tradeInItemId: string // uuid
+        /**
+         * Status of the item
+         */
+        status:
+          | 'SUBMITTED'
+          | 'RECEIVED'
+          | 'MANUAL_OFFER'
+          | 'PENDING_OFFER'
+          | 'PENDING_PAYMENT'
+          | 'PENDING_RETURN'
+          | 'PENDING_RECYCLE'
+          | 'RETURNED'
+          | 'PAYMENT_IN_PROCESS'
+          | 'PAYMENT_FAILED'
+          | 'NOT_RECEIVED'
+          | 'COMPLETED'
+          | 'UNKNOWN'
+        /**
+         * Offer status of the item
+         */
+        offerStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED'
+        /**
+         * Offer note of the item
+         */
+        offerGradingNote?: string
+        /**
+         * Unique identifier for the variant (used as an input for the API call "createTradeIn")
+         */
+        variantId: string // uuid
+        /**
+         * Indicates if the product is functional (used as an input for the API call "createTradeIn")
+         */
+        isProductFunctional: boolean
+        /**
+         * Product model name (for display purposes only)
+         */
+        name: string
+        /**
+         * Product model image (for display purposes only)
+         */
+        image: string
+        /**
+         * Product model attributes (for display purposes only)
+         */
+        attributes: string[]
+        /**
+         * User's answers (for display purposes only)
+         */
+        answers: string[]
+        /**
+         * Payment plan and prices a user can get, with processing time, currently only C2B is supported
+         */
+        paymentPlan: {
+          /**
+           * Payment plan, now only C2B is
+           */
+          plan: string
+          /**
+           * Currency of the price (for display purposes only)
+           */
+          currency: string
+          /**
+           * Trade-in price in pure number format (for both display and as an input for the API call "createTradeIn")
+           */
+          price: number
+          /**
+           * The minimum number of time units before payment is made
+           */
+          minPaymentTime: number
+          /**
+           * The maximum number of time units before payment is made
+           */
+          maxPaymentTime: number
+          /**
+           * The time unit for the payment time
+           */
+          paymentTimeUnit: 'HOURS' | 'DAYS'
+        }
+      }
+    }
   }
 }
 declare namespace Paths {
+  namespace V1ControllerCancelTradeIn {
+    namespace Parameters {
+      export type TradeInId = string
+    }
+    export interface PathParameters {
+      tradeInId: Parameters.TradeInId
+    }
+    namespace Responses {
+      export interface $200 {}
+      export interface $400 {}
+      export interface $404 {}
+      export interface $500 {}
+    }
+  }
+  namespace V1ControllerConfirmTradeInItemOffer {
+    namespace Parameters {
+      export type TradeInItemId = string
+    }
+    export interface PathParameters {
+      tradeInItemId: Parameters.TradeInItemId
+    }
+    export type RequestBody = Components.Schemas.V1ConfirmTradeInItemOfferInput
+    namespace Responses {
+      export type $200 = Components.Schemas.V1WrappedConfirmTradeInItemOfferOutput
+    }
+  }
   namespace V1ControllerCreateTradeIn {
     export type RequestBody = Components.Schemas.V1CreateTradeInInput
     namespace Responses {
@@ -979,6 +1352,42 @@ declare namespace Paths {
     export type RequestBody = Components.Schemas.V1GetTradeInItemDataInput
     namespace Responses {
       export type $200 = Components.Schemas.V1WrappedGetTradeInItemDataOutput
+    }
+  }
+  namespace V1ControllerGetTradeInOrderData {
+    namespace Parameters {
+      export type ReturnTradeInItems = boolean
+      export type TradeInId = string
+      export type Version = number
+    }
+    export interface PathParameters {
+      tradeInId: Parameters.TradeInId
+    }
+    export interface QueryParameters {
+      version?: Parameters.Version
+      returnTradeInItems?: Parameters.ReturnTradeInItems
+    }
+    namespace Responses {
+      export type $200 = Components.Schemas.V1WrappedGetTradeInOrderDataOutput
+      export interface $404 {}
+      export interface $500 {}
+    }
+  }
+  namespace V1ControllerGetTradeInOrderItemData {
+    namespace Parameters {
+      export type TradeInItemId = string
+      export type Version = number
+    }
+    export interface PathParameters {
+      tradeInItemId: Parameters.TradeInItemId
+    }
+    export interface QueryParameters {
+      version?: Parameters.Version
+    }
+    namespace Responses {
+      export type $200 = Components.Schemas.V1WrappedGetTradeInOrderItemDataOutput
+      export interface $404 {}
+      export interface $500 {}
     }
   }
 }

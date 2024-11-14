@@ -10,7 +10,6 @@ import { useTradeInItemData } from '~/queries'
 import {
   cartStore,
   CartStoreItemType,
-  footerStore,
   progressBarStore,
   questionResultsStore,
   resetQuestionResultsStore,
@@ -22,7 +21,7 @@ import { AddToCartPageContent } from './content'
 export const AddToCartPage: FC = () => {
   const navigate = useNavigate()
 
-  const { modelId } = useSnapshot(questionResultsStore)
+  const { modelId, modelName, modelImage } = useSnapshot(questionResultsStore)
   const questionResults = useSnapshot(questionResultsStore)
   const { isFunctional } = questionResults
   const { totalSteps } = useSnapshot(progressBarStore)
@@ -48,13 +47,14 @@ export const AddToCartPage: FC = () => {
 
   // Add data to the cart
   useLayoutEffect(() => {
-    if (data?.data && !cartItemAdded.current) {
-      if (footerStore?.nextButton) {
-        footerStore.nextButton.disabled = false
-      }
+    if (!modelId || !modelImage || !modelName) {
+      setTimeout(() => navigate('/' + NavigationDestination.Category, { replace: true }))
+      return
+    }
 
+    if (data?.data && !cartItemAdded.current) {
       // Hardcoded for now, until we have a way to select the payment plan
-      const paymentPlan = data.data.paymentPlans.find((plan) => plan.plan === 'C2B')
+      const paymentPlan = data?.data?.paymentPlans?.[0]
 
       if (paymentPlan) {
         const cartItem: CartStoreItemType = {
@@ -85,10 +85,21 @@ export const AddToCartPage: FC = () => {
         navigate('/' + NavigationDestination.Summary, { replace: true })
       } else {
         setIneligibleProduct(cloneDeep(data.data))
-        resetQuestionResultsStore(NavigationDestination.AddToCart)
       }
+    } else {
+      setIneligibleProduct({
+        variantId: '',
+        isProductFunctional: false,
+        paymentPlans: [],
+        isEligibleForTradeIn: false,
+        ecoSavings: { savedCo2: 0, savedEwaste: 0 },
+        name: modelName!,
+        image: modelImage!,
+        attributes: [],
+        answers: [],
+      })
     }
-  }, [data])
+  }, [data, modelId, modelImage, modelName])
 
   useLayoutEffect(() => {
     progressBarStore.currentStep = totalSteps
@@ -99,7 +110,7 @@ export const AddToCartPage: FC = () => {
       poweredBy: false,
       prevButton: undefined,
       nextButton: {
-        disabled: true,
+        disabled: false,
         textOverride: cartItems.length ? 'Naar inruiloverzicht' : 'Nieuw apparaat inruilen',
         onClick: () => {
           navigate('/' + (cartItems.length ? NavigationDestination.Summary : NavigationDestination.Category))
@@ -107,13 +118,6 @@ export const AddToCartPage: FC = () => {
       },
     })
   }, [])
-
-  if (!modelId || isFunctional === undefined) {
-    if (!ineligibleProduct) {
-      navigate('/' + NavigationDestination.Category, { replace: true })
-      return null
-    }
-  }
 
   if (isLoading) {
     return <Loading />

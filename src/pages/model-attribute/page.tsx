@@ -78,6 +78,11 @@ export const ModelAttributePage: FC = () => {
       return
     }
 
+    if (data?.data && !data.data.isEligibleForTradeIn) {
+      setTimeout(() => navigate('/' + NavigationDestination.AddToCart))
+      return
+    }
+
     questionSectionStore.current = NavigationDestination.ModelAttribute
     questionSectionStore.index = sectionIndex
 

@@ -57,6 +57,11 @@ export const ProblemPage: FC = () => {
       return
     }
 
+    if (data?.data && !data.data.isEligibleForTradeIn) {
+      setTimeout(() => navigate('/' + NavigationDestination.AddToCart))
+      return
+    }
+
     questionSectionStore.current = NavigationDestination.Problem
     questionSectionStore.index = 0
 
