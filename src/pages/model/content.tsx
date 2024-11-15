@@ -133,6 +133,7 @@ export const ModelPageContent = ({
                     onSelect(model.id)
                     setOpen(false)
                   }}
+                  className="cursor-pointer"
                 >
                   {model.name}
                   <LuCheck className={cn('mr-2 h-4 w-4', modelId === model.id ? 'opacity-100' : 'opacity-0')} />
