@@ -4,7 +4,7 @@ const useCreateTradeIn = () => {
   const baseUrl = import.meta.env.API_BASE_URL
   const authKey = import.meta.env.API_AUTH_KEY
 
-  return useMutation<Components.Schemas.V1CreateTradeInOutput, Error, Components.Schemas.V1CreateTradeInInput>({
+  return useMutation<Components.Schemas.V1WrappedCreateTradeInOutput, Error, Components.Schemas.V1CreateTradeInInput>({
     mutationFn: async (tradeInData) => {
       const url = `${baseUrl}/v1/trade-in`
 

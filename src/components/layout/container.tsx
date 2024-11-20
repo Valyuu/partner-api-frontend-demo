@@ -199,7 +199,15 @@ export const ContainerLayout = () => {
       },
       {
         onSuccess: (result) => {
-          console.log('Trade-In created successfully:', result)
+          console.log('Create Trade-In result:', result)
+          if (!result.success) {
+            // Handle unsuccessful response
+            setTradeInResult(result)
+            toast.error(result.message || 'Failed to create Trade-In')
+            setActiveTab('tradeInResult')
+            return
+          }
+
           setTradeInResult(result)
           toast.success('Trade-In created successfully!')
           setActiveTab('tradeInResult')
