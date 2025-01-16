@@ -49,6 +49,7 @@ const defaultFormData: Omit<Components.Schemas.V1CreateTradeInInput, 'items'> = 
     accountNumber: 'NL39RABO0300065264',
   },
   paymentType: 'BANK_TRANSFER',
+  lang: 'en',
 }
 
 const phoneAreaCodes = [
@@ -106,6 +107,7 @@ const formSchema = z
         }),
     }),
     paymentType: z.enum(['BANK_TRANSFER', 'DONATION', 'BULK_SETTLEMENT']),
+    lang: z.enum(['en', 'nl', 'de']),
   })
   .refine(
     (data) => {
@@ -554,6 +556,32 @@ export const ContainerLayout = () => {
                                   className="mr-2"
                                 />
                                 {upperFirst(type.replace(/_/g, ' ').toLowerCase())}
+                              </label>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Language */}
+                    <div className="space-y-2">
+                      <label className="block">Language</label>
+                      <div className="flex gap-4">
+                        {['en', 'nl', 'de'].map((lang) => (
+                          <Controller
+                            key={lang}
+                            name="lang"
+                            control={control}
+                            render={({ field }) => (
+                              <label className="inline-flex select-none items-center">
+                                <input
+                                  type="radio"
+                                  {...field}
+                                  value={lang}
+                                  checked={field.value === lang}
+                                  className="mr-2"
+                                />
+                                {{ en: 'English', nl: 'Dutch', de: 'German' }[lang]}
                               </label>
                             )}
                           />
