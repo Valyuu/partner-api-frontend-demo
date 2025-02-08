@@ -6,7 +6,7 @@ import { BsArrowLeft, BsArrowRight } from 'react-icons/bs'
 import { cn } from '~/utils'
 
 const buttonVariants = cva(
-  'group inline-flex max-w-full cursor-pointer items-center justify-center rounded-lg text-lg font-semibold leading-5 outline-none transition duration-100 hover:scale-[1.025] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-[#c9d7df] disabled:text-[#88919e]',
+  'group inline-flex max-w-full !shrink cursor-pointer items-center justify-center rounded-lg text-lg font-semibold leading-5 outline-none transition duration-100 hover:scale-[1.025] disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-[#c9d7df] disabled:text-[#88919e]',
   {
     variants: {
       variant: {

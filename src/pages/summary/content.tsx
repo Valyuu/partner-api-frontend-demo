@@ -85,7 +85,8 @@ export const SummaryPageContent = () => {
               />
               <Label htmlFor="checkbox-data-forward" className="flex grow cursor-pointer flex-col leading-6">
                 <span>
-                  Ja, ik ga akkoord dat mijn gegevens, ingevuld tijdens het bestelproces, worden doorgestuurd naar Valyuu ten behoeve van het toestelinruil verzendlabel.
+                  Ja, ik ga akkoord dat mijn gegevens, ingevuld tijdens het bestelproces, worden doorgestuurd naar
+                  Valyuu ten behoeve van het toestelinruil verzendlabel.
                 </span>
                 {showTocErrors && !tocStatus[0] ? <div className="text-[#fe5f55]">Dit veld is verplicht.</div> : null}
               </Label>

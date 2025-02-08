@@ -12,7 +12,7 @@ export const Footer = () => {
     <>
       {poweredBy ? (
         <div className="flex-none">
-          <img src={poweredByImg} alt="Powered by Valyuu" className="h-[58] w-[120px] flex-none" />
+          <img src={poweredByImg} alt="Powered by Valyuu" className="h-auto w-20 flex-none md:w-[120px]" />
         </div>
       ) : null}
       {prevButton ? (
